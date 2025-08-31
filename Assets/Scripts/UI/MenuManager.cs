@@ -5,21 +5,37 @@ using System.Collections.Generic;
 
 namespace TowerDefense.UI
 {
+    /// <summary>
+    /// Manages opening and closing of UI menus.
+    /// </summary>
     public class MenuManager : MonoBehaviour
     {
+        #region Variables
         [SerializeField] private Menu[] menus;
 
-        private Dictionary<MenuType, Menu> _menuDict;
+        private Dictionary<MenuType, Menu> menuDict;
+        #endregion
 
+        #region Unity Lifecycle
         private void Awake()
         {
-            _menuDict = new Dictionary<MenuType, Menu>();
+            menuDict = new Dictionary<MenuType, Menu>();
             foreach (var menu in menus)
             {
-                _menuDict.TryAdd(menu.menuType, menu);
+                menuDict.TryAdd(menu.menuType, menu);
             }
         }
 
+        private void OnDestroy()
+        {
+            foreach (var menu in menus)
+            {
+                CloseMenu(menu);
+            }
+        }
+        #endregion
+
+        #region Public Methods
         public void OpenMenu(MenuType menuType)
         {
             foreach (var menu in menus)
@@ -33,12 +49,14 @@ namespace TowerDefense.UI
 
         public T GetMenu<T>(MenuType menuType) where T : Menu
         {
-            if (_menuDict.TryGetValue(menuType, out var menu) && menu is T typed)
+            if (menuDict.TryGetValue(menuType, out var menu) && menu is T typed)
                 return typed;
 
             return null;
         }
+        #endregion
 
+        #region Private Methods
         private void OpenMenu(Menu menuToOpen)
         {
             foreach (var menu in menus)
@@ -54,5 +72,6 @@ namespace TowerDefense.UI
         {
             menu.Close();
         }
+        #endregion
     }
 }

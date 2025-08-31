@@ -5,40 +5,45 @@ namespace TowerDefense.Towers
 {
     public class AOEProjectile : Projectile
     {
-        [SerializeField] private float _aoeRadius = 2f;
+        #region Variables
+        [SerializeField] private float aoeRadius = 2f;
+        #endregion
 
+        #region Public Methods
         public void SetAOERadius(float radius)
         {
-            _aoeRadius = radius;
+            aoeRadius = radius;
         }
+        #endregion
 
+        #region Protected Methods
         protected override void OnHit()
         {
-            // Deal AOE damage
-            Collider[] colliders = Physics.OverlapSphere(transform.position, _aoeRadius);
+            Collider[] colliders = Physics.OverlapSphere(transform.position, aoeRadius);
             foreach (Collider collider in colliders)
             {
-                EnemyController enemy = collider.GetComponent<EnemyController>();
+                Enemy enemy = collider.GetComponent<Enemy>();
                 if (enemy != null && enemy.IsAlive)
                 {
-                    enemy.TakeDamage(_damage);
+                    enemy.TakeDamage(damage);
                 }
             }
 
-            // Spawn impact effect
-            if (_impactEffect != null)
+            if (impactEffect != null)
             {
-                Instantiate(_impactEffect, transform.position, transform.rotation);
+                Instantiate(impactEffect, transform.position, transform.rotation);
             }
 
-            // Destroy projectile
             Destroy(gameObject);
         }
+        #endregion
 
+        #region Private Methods
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, _aoeRadius);
+            Gizmos.DrawWireSphere(transform.position, aoeRadius);
         }
+        #endregion
     }
 }

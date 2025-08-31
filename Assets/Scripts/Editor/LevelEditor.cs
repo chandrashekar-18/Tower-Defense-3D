@@ -8,31 +8,72 @@ using TowerDefense.Level;
 namespace TowerDefense.Editor
 {
     /// <summary>
-    /// Editor tool for creating and editing levels
+    /// Editor tool for creating and editing Tower Defense levels.
     /// </summary>
     public class LevelEditor : EditorWindow
     {
-        private LevelData _currentLevel;
-        private int _selectedCellTypeIndex = 0;
-        private Vector2 _scrollPosition;
-        private bool _showGridEditor = true;
-        private bool _showWaveEditor = true;
-        private CellType[] _cellTypes = { CellType.Empty, CellType.Path, CellType.SpawnPoint, CellType.ExitPoint, CellType.Obstacle };
-        private string[] _cellTypeNames = { "Empty", "Path", "Spawn Point", "Exit Point", "Obstacle" };
+        #region Private Fields
+        private LevelData currentLevel;
+        private int selectedCellTypeIndex = 0;
+        private Vector2 scrollPosition;
+        private bool showGridEditor = true;
+        private bool showWaveEditor = true;
 
+        private readonly CellType[] cellTypes =
+        {
+            CellType.Empty,
+            CellType.Path,
+            CellType.SpawnPoint,
+            CellType.ExitPoint,
+            CellType.Obstacle
+        };
+
+        private readonly string[] cellTypeNames =
+        {
+            "Empty",
+            "Path",
+            "Spawn Point",
+            "Exit Point",
+            "Obstacle"
+        };
+        #endregion
+
+        #region Menu
         [MenuItem("Tools/Tower Defense/Level Editor")]
         public static void ShowWindow()
         {
             GetWindow<LevelEditor>("Level Editor");
         }
+        #endregion
 
+        #region Unity Callbacks
         private void OnGUI()
         {
             GUILayout.Label("Tower Defense Level Editor", EditorStyles.boldLabel);
 
             EditorGUILayout.Space();
 
-            // Level selection/creation
+            DrawLevelButtons();
+
+            if (currentLevel == null)
+            {
+                EditorGUILayout.HelpBox("Create a new level or load an existing one.", MessageType.Info);
+                return;
+            }
+
+            scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+
+            DrawLevelProperties();
+            DrawGridEditorSection();
+            DrawWaveEditorSection();
+
+            EditorGUILayout.EndScrollView();
+        }
+        #endregion
+
+        #region Level Buttons
+        private void DrawLevelButtons()
+        {
             EditorGUILayout.BeginHorizontal();
 
             if (GUILayout.Button("New Level", GUILayout.Width(100)))
@@ -51,64 +92,14 @@ namespace TowerDefense.Editor
             }
 
             EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.Space();
-
-            if (_currentLevel == null)
-            {
-                EditorGUILayout.HelpBox("Create a new level or load an existing one.", MessageType.Info);
-                return;
-            }
-
-            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
-
-            // Level properties
-            EditorGUILayout.LabelField("Level Properties", EditorStyles.boldLabel);
-            _currentLevel.name = EditorGUILayout.TextField("Level Name", _currentLevel.name);
-
-            SerializedObject serializedObject = new SerializedObject(_currentLevel);
-            SerializedProperty levelNumberProperty = serializedObject.FindProperty("_levelNumber");
-            SerializedProperty startingCurrencyProperty = serializedObject.FindProperty("_startingCurrency");
-
-            EditorGUILayout.PropertyField(levelNumberProperty, new GUIContent("Level Number"));
-            EditorGUILayout.PropertyField(startingCurrencyProperty, new GUIContent("Starting Currency"));
-
-            serializedObject.ApplyModifiedProperties();
-
-            EditorGUILayout.Space();
-
-            // Grid Editor
-            _showGridEditor = EditorGUILayout.Foldout(_showGridEditor, "Grid Editor");
-            if (_showGridEditor)
-            {
-                EditorGUILayout.BeginHorizontal();
-
-                EditorGUILayout.LabelField("Cell Type", GUILayout.Width(80));
-                _selectedCellTypeIndex = EditorGUILayout.Popup(_selectedCellTypeIndex, _cellTypeNames);
-
-                EditorGUILayout.EndHorizontal();
-
-                // Grid view
-                EditorGUILayout.LabelField("Grid Layout (Click to set cell type)");
-                DrawGridEditor();
-            }
-
-            EditorGUILayout.Space();
-
-            // Wave Editor
-            _showWaveEditor = EditorGUILayout.Foldout(_showWaveEditor, "Wave Editor");
-            if (_showWaveEditor)
-            {
-                DrawWaveEditor();
-            }
-
-            EditorGUILayout.EndScrollView();
         }
+        #endregion
 
+        #region Level Operations
         private void CreateNewLevel()
         {
-            _currentLevel = ScriptableObject.CreateInstance<LevelData>();
-            _currentLevel.InitializeDefaultValues();
+            currentLevel = ScriptableObject.CreateInstance<LevelData>();
+            currentLevel.InitializeDefaultValues();
         }
 
         private void LoadLevelFromFile()
@@ -118,66 +109,102 @@ namespace TowerDefense.Editor
                 return;
 
             string json = File.ReadAllText(path);
-            _currentLevel = LevelData.FromJson(json);
+            currentLevel = LevelData.FromJson(json);
         }
 
         private void SaveLevelToFile()
         {
-            if (_currentLevel == null)
+            if (currentLevel == null)
                 return;
 
-            string path = EditorUtility.SaveFilePanel("Save Level", Application.dataPath, _currentLevel.name + ".json", "json");
+            string path = EditorUtility.SaveFilePanel(
+                "Save Level",
+                Application.dataPath,
+                currentLevel.name + ".json",
+                "json"
+            );
+
             if (string.IsNullOrEmpty(path))
                 return;
 
-            string json = _currentLevel.ToJson();
+            string json = currentLevel.ToJson();
             File.WriteAllText(path, json);
 
             // Also save as asset
-            string assetPath = "Assets/Resources/Levels/" + _currentLevel.name + ".asset";
+            string assetPath = "Assets/Resources/Levels/" + currentLevel.name + ".asset";
 
-            // Ensure directory exists
             Directory.CreateDirectory(Path.GetDirectoryName(assetPath));
 
-            AssetDatabase.CreateAsset(_currentLevel, assetPath);
+            AssetDatabase.CreateAsset(currentLevel, assetPath);
             AssetDatabase.SaveAssets();
 
-            EditorUtility.DisplayDialog("Level Saved", "Level saved to:\n" + path + "\n\nAnd as asset:\n" + assetPath, "OK");
+            EditorUtility.DisplayDialog(
+                "Level Saved",
+                $"Level saved to:\n{path}\n\nAnd as asset:\n{assetPath}",
+                "OK"
+            );
+        }
+        #endregion
+
+        #region Level Properties
+        private void DrawLevelProperties()
+        {
+            EditorGUILayout.LabelField("Level Properties", EditorStyles.boldLabel);
+
+            currentLevel.name = EditorGUILayout.TextField("Level Name", currentLevel.name);
+
+            SerializedObject serializedObject = new SerializedObject(currentLevel);
+            SerializedProperty levelNumberProperty = serializedObject.FindProperty("levelNumber");
+            SerializedProperty startingCurrencyProperty = serializedObject.FindProperty("startingCurrency");
+
+            EditorGUILayout.PropertyField(levelNumberProperty, new GUIContent("Level Number"));
+            EditorGUILayout.PropertyField(startingCurrencyProperty, new GUIContent("Starting Currency"));
+
+            serializedObject.ApplyModifiedProperties();
+
+            EditorGUILayout.Space();
+        }
+        #endregion
+
+        #region Grid Editor
+        private void DrawGridEditorSection()
+        {
+            showGridEditor = EditorGUILayout.Foldout(showGridEditor, "Grid Editor");
+            if (!showGridEditor || currentLevel == null)
+                return;
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Cell Type", GUILayout.Width(80));
+            selectedCellTypeIndex = EditorGUILayout.Popup(selectedCellTypeIndex, cellTypeNames);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.LabelField("Grid Layout (Click to set cell type)");
+            DrawGridEditor();
         }
 
         private void DrawGridEditor()
         {
-            if (_currentLevel == null)
-                return;
+            int gridWidth = currentLevel.GridWidth;
+            int gridHeight = currentLevel.GridHeight;
 
-            int gridWidth = _currentLevel.GridWidth;
-            int gridHeight = _currentLevel.GridHeight;
-
-            // Calculate cell size based on window width
             float cellSize = Mathf.Min(20, (position.width - 40) / gridWidth);
-
-            // Grid background
             Rect gridRect = EditorGUILayout.GetControlRect(GUILayout.Height(cellSize * gridHeight + 1));
             Rect cellRect = new Rect(gridRect.x, gridRect.y, cellSize, cellSize);
 
             EditorGUI.DrawRect(new Rect(gridRect.x - 1, gridRect.y - 1, gridRect.width + 2, gridRect.height + 2), Color.black);
 
-            // Draw grid cells
             for (int z = 0; z < gridHeight; z++)
             {
                 cellRect.x = gridRect.x;
 
                 for (int x = 0; x < gridWidth; x++)
                 {
-                    CellType cellType = _currentLevel.GetCellType(x, z);
-                    Color cellColor = GetCellColor(cellType);
+                    CellType cellType = currentLevel.GetCellType(x, z);
+                    EditorGUI.DrawRect(cellRect, GetCellColor(cellType));
 
-                    EditorGUI.DrawRect(cellRect, cellColor);
-
-                    // Handle clicks
                     if (Event.current.type == EventType.MouseDown && cellRect.Contains(Event.current.mousePosition))
                     {
-                        _currentLevel.SetCellType(x, z, _cellTypes[_selectedCellTypeIndex]);
+                        currentLevel.SetCellType(x, z, cellTypes[selectedCellTypeIndex]);
                         GUI.changed = true;
                         Repaint();
                     }
@@ -189,13 +216,34 @@ namespace TowerDefense.Editor
             }
         }
 
-        private void DrawWaveEditor()
+        private Color GetCellColor(CellType cellType)
         {
-            if (_currentLevel == null)
+            return cellType switch
+            {
+                CellType.Empty => new Color(0.8f, 0.8f, 0.8f),
+                CellType.Path => new Color(0.6f, 0.4f, 0.2f),
+                CellType.SpawnPoint => Color.green,
+                CellType.ExitPoint => Color.red,
+                CellType.Obstacle => new Color(0.3f, 0.3f, 0.3f),
+                _ => Color.white
+            };
+        }
+        #endregion
+
+        #region Wave Editor
+        private void DrawWaveEditorSection()
+        {
+            showWaveEditor = EditorGUILayout.Foldout(showWaveEditor, "Wave Editor");
+            if (!showWaveEditor || currentLevel == null)
                 return;
 
-            SerializedObject serializedObject = new SerializedObject(_currentLevel);
-            SerializedProperty wavesProperty = serializedObject.FindProperty("_waves");
+            DrawWaveEditor();
+        }
+
+        private void DrawWaveEditor()
+        {
+            SerializedObject serializedObject = new SerializedObject(currentLevel);
+            SerializedProperty wavesProperty = serializedObject.FindProperty("waves");
 
             EditorGUILayout.PropertyField(wavesProperty, new GUIContent("Waves"), true);
 
@@ -203,30 +251,12 @@ namespace TowerDefense.Editor
             {
                 WaveData newWave = new WaveData();
                 newWave.AddEnemyGroup(new EnemyGroupData());
-                _currentLevel.AddWave(newWave);
+                currentLevel.AddWave(newWave);
             }
 
             serializedObject.ApplyModifiedProperties();
         }
-
-        private Color GetCellColor(CellType cellType)
-        {
-            switch (cellType)
-            {
-                case CellType.Empty:
-                    return new Color(0.8f, 0.8f, 0.8f);
-                case CellType.Path:
-                    return new Color(0.6f, 0.4f, 0.2f);
-                case CellType.SpawnPoint:
-                    return Color.green;
-                case CellType.ExitPoint:
-                    return Color.red;
-                case CellType.Obstacle:
-                    return new Color(0.3f, 0.3f, 0.3f);
-                default:
-                    return Color.white;
-            }
-        }
+        #endregion
     }
 }
 #endif

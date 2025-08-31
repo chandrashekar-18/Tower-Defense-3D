@@ -2,39 +2,44 @@ using UnityEngine;
 
 namespace TowerDefense.Towers
 {
+    /// <summary>
+    /// Area-of-effect cannon tower.
+    /// </summary>
     public class AOECannonTower : Tower
     {
-        [SerializeField] private float _aoeRadius = 2f;
+        #region Variables
+        [SerializeField] private float aoeRadius = 2f;
+        #endregion
 
+        #region Protected Methods
         protected override void Attack()
         {
-            if (_currentTarget == null)
+            if (currentTarget == null)
                 return;
 
-            // Fire AOE projectile
-            if (_projectilePrefab != null && _firingPoint != null)
+            if (projectilePrefab != null && firingPoint != null)
             {
-                GameObject projectileObj = Instantiate(_projectilePrefab, _firingPoint.position, _firingPoint.rotation);
+                GameObject projectileObj = Instantiate(projectilePrefab, firingPoint.position, firingPoint.rotation);
                 AOEProjectile projectile = projectileObj.GetComponent<AOEProjectile>();
 
                 if (projectile != null)
                 {
-                    projectile.Initialize(_currentTarget, _damage);
-                    projectile.SetAOERadius(_aoeRadius);
+                    projectile.Initialize(currentTarget, damage);
+                    projectile.SetAOERadius(aoeRadius);
                 }
                 else
                 {
-                    // Fallback if using base projectile
                     Projectile baseProjectile = projectileObj.GetComponent<Projectile>();
                     if (baseProjectile != null)
                     {
-                        baseProjectile.Initialize(_currentTarget, _damage);
+                        baseProjectile.Initialize(currentTarget, damage);
                     }
                 }
             }
 
             // Notify listeners
-            OnTowerFired?.Invoke(this, _currentTarget);
+            OnTowerFired?.Invoke(this, currentTarget);
         }
+        #endregion
     }
 }

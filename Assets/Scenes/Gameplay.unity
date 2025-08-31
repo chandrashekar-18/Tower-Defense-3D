@@ -148,13 +148,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12aab535c6362844abb9b3e16a3e8274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainCamera: {fileID: 396594558}
-  _gridLayerMask:
+  mainCamera: {fileID: 396594558}
+  gridLayerMask:
     serializedVersion: 2
     m_Bits: 0
-  _towerFactory: {fileID: 513735732}
-  _selectedTowerType: 0
-  _placementIndicator: {fileID: 0}
+  towerFactory: {fileID: 513735732}
+  selectedTowerType: 0
+  placementIndicator: {fileID: 0}
 --- !u!4 &46778445
 Transform:
   m_ObjectHideFlags: 0
@@ -392,13 +392,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 396594556}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.35355338, y: -0.35355338, z: 0.1464466, w: 0.8535535}
+  m_LocalPosition: {x: 10, y: 15, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: -45, z: 0}
 --- !u!114 &396594561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -627,11 +627,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca375ca2c2f8f4843a343bfa272b73e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _waves: []
-  _currentWaveIndex: -1
-  _remainingEnemiesInWave: 0
-  _isSpawning: 0
-  _timeBetweenWaves: 5
+  waves: []
+  currentWaveIndex: -1
+  remainingEnemiesInWave: 0
+  isSpawning: 0
+  timeBetweenWaves: 5
 --- !u!114 &513735730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -644,7 +644,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d3052322906b084bb15ceefccc915d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentScore: 0
+  currentScore: 0
 --- !u!114 &513735731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -657,11 +657,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b0a6c71cb8f12844bf72048cf86210d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _basicProjectilePrefab: {fileID: 7146271070484394020, guid: a879412c577bf1744aefaeadde8899f4, type: 3}
-  _aoeProjectilePrefab: {fileID: 7146271070484394020, guid: 65e8f6327b32c464d9294f2401d78c60, type: 3}
-  _sniperProjectilePrefab: {fileID: 5290952070469539214, guid: 84300e53c91620246ad0103f5f2884e9, type: 3}
-  _slowProjectilePrefab: {fileID: 4804215045907154901, guid: 4a1ba81d497566e4bae40209a4d3943a, type: 3}
-  _initialPoolSize: 20
+  basicProjectilePrefab: {fileID: 7146271070484394020, guid: a879412c577bf1744aefaeadde8899f4, type: 3}
+  aoeProjectilePrefab: {fileID: 7146271070484394020, guid: 65e8f6327b32c464d9294f2401d78c60, type: 3}
+  sniperProjectilePrefab: {fileID: 5290952070469539214, guid: 84300e53c91620246ad0103f5f2884e9, type: 3}
+  slowProjectilePrefab: {fileID: 4804215045907154901, guid: 4a1ba81d497566e4bae40209a4d3943a, type: 3}
+  initialPoolSize: 20
 --- !u!114 &513735732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -674,11 +674,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a49dcafcb93e3c647814594476fa8d44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _availableTowers: []
-  _basicTowerPrefab: {fileID: 667791655268636618, guid: 92a698f9c2b1a054a97381e3b9a8ed31, type: 3}
-  _aoeCannonPrefab: {fileID: 667791655268636618, guid: 2cf0a083e97f97a44992192eb03a598a, type: 3}
-  _sniperTowerPrefab: {fileID: 667791655268636618, guid: 6f5387c0874aa024d81c1d8c8b8e864e, type: 3}
-  _slowTowerPrefab: {fileID: 667791655268636618, guid: c7b0c30a435009b4183718c16d6c2da3, type: 3}
+  availableTowers: []
+  basicTowerPrefab: {fileID: 667791655268636618, guid: 92a698f9c2b1a054a97381e3b9a8ed31, type: 3}
+  aoeCannonPrefab: {fileID: 667791655268636618, guid: 2cf0a083e97f97a44992192eb03a598a, type: 3}
+  sniperTowerPrefab: {fileID: 667791655268636618, guid: 6f5387c0874aa024d81c1d8c8b8e864e, type: 3}
+  slowTowerPrefab: {fileID: 667791655268636618, guid: c7b0c30a435009b4183718c16d6c2da3, type: 3}
 --- !u!114 &513735733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -691,10 +691,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88d3a859dc85a7649bca00f49d6961e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _basicEnemyPrefab: {fileID: 5339702903596219646, guid: 64cf652eda3e5a7468f31431f0c2cae5, type: 3}
-  _fastEnemyPrefab: {fileID: 7245338253536442534, guid: a01a6c60fa1f6ae4ba44bb6d571576e6, type: 3}
-  _tankEnemyPrefab: {fileID: 8068590163765630247, guid: c77a10079b6123d499b22406aa5a7f6f, type: 3}
-  _towerAttackerPrefab: {fileID: 2865038233971891842, guid: 87ffc1f1d2599f04096302ba4a2d99c7, type: 3}
+  basicEnemyPrefab: {fileID: 5339702903596219646, guid: 64cf652eda3e5a7468f31431f0c2cae5, type: 3}
+  fastEnemyPrefab: {fileID: 7245338253536442534, guid: a01a6c60fa1f6ae4ba44bb6d571576e6, type: 3}
+  tankEnemyPrefab: {fileID: 8068590163765630247, guid: c77a10079b6123d499b22406aa5a7f6f, type: 3}
+  towerAttackerPrefab: {fileID: 2865038233971891842, guid: 87ffc1f1d2599f04096302ba4a2d99c7, type: 3}
 --- !u!1 &514219643
 GameObject:
   m_ObjectHideFlags: 0
@@ -937,6 +937,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 586327439}
   m_CullTransparentMesh: 1
+--- !u!1 &672728099
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 672728100}
+  m_Layer: 0
+  m_Name: GridContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &672728100
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672728099}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &708090656
 GameObject:
   m_ObjectHideFlags: 0
@@ -2052,14 +2083,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 087f82d9825f858459025102a5748544, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gridCellPrefab: {fileID: 8129105166332230241, guid: 0bb8e61b6107abb429ab825ebe747c31, type: 3}
-  _pathCellPrefab: {fileID: 4092017564501705002, guid: e224ab4d4bdfe2148a0705068e92c9e9, type: 3}
-  _spawnPointPrefab: {fileID: 430858142748919719, guid: 111e2b34bc4644440b6e92a2ca26efb7, type: 3}
-  _exitPointPrefab: {fileID: 3424112632139676126, guid: cce32ef15606264418f37f335c90e758, type: 3}
-  _gridContainer: {fileID: 0}
-  _gridWidth: 15
-  _gridHeight: 10
-  _cellSize: 1
+  gridCellPrefab: {fileID: 8129105166332230241, guid: 0bb8e61b6107abb429ab825ebe747c31, type: 3}
+  pathCellPrefab: {fileID: 4092017564501705002, guid: e224ab4d4bdfe2148a0705068e92c9e9, type: 3}
+  spawnPointPrefab: {fileID: 430858142748919719, guid: 111e2b34bc4644440b6e92a2ca26efb7, type: 3}
+  exitPointPrefab: {fileID: 3424112632139676126, guid: cce32ef15606264418f37f335c90e758, type: 3}
+  gridContainer: {fileID: 672728100}
+  gridWidth: 15
+  gridHeight: 10
+  cellSize: 1
 --- !u!4 &1135101299
 Transform:
   m_ObjectHideFlags: 0
@@ -2949,7 +2980,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b001ba3465c415c9aca7081438b3178, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _menuManager: {fileID: 1504072248}
+  menuManager: {fileID: 1504072248}
   towerController: {fileID: 46778444}
 --- !u!114 &1694287245
 MonoBehaviour:
@@ -4435,6 +4466,7 @@ SceneRoots:
   - {fileID: 396594559}
   - {fileID: 1654233583}
   - {fileID: 1694287248}
+  - {fileID: 672728100}
   - {fileID: 513735728}
   - {fileID: 1135101299}
   - {fileID: 46778445}

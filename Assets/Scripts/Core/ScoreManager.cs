@@ -5,7 +5,7 @@ using TowerDefense.Enemies;
 namespace TowerDefense.Core
 {
     /// <summary>
-    /// Manages player score
+    /// Manages player score.
     /// </summary>
     public class ScoreManager : MonoBehaviour
     {
@@ -21,14 +21,12 @@ namespace TowerDefense.Core
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         #endregion
 
-        #region Properties
-        [SerializeField] private int _currentScore = 0;
-
-        public int CurrentScore => _currentScore;
+        #region Variables
+        [SerializeField] private int currentScore = 0;
+        public int CurrentScore => currentScore;
         #endregion
 
         #region Events
@@ -57,19 +55,19 @@ namespace TowerDefense.Core
         #region Public Methods
         public void AddScore(int amount)
         {
-            _currentScore += amount;
-            OnScoreChanged?.Invoke(_currentScore);
+            currentScore += amount;
+            OnScoreChanged?.Invoke(currentScore);
         }
 
         public void ResetScore()
         {
-            _currentScore = 0;
-            OnScoreChanged?.Invoke(_currentScore);
+            currentScore = 0;
+            OnScoreChanged?.Invoke(currentScore);
         }
         #endregion
 
         #region Private Methods
-        private void HandleEnemyDefeated(EnemyController enemy)
+        private void HandleEnemyDefeated(Enemy enemy)
         {
             // Add score based on enemy type
             int scoreValue = 0;

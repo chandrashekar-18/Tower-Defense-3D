@@ -6,11 +6,14 @@ namespace TowerDefense.UI.Menus
 {
     public class PauseMenu : Menu
     {
+        #region Variables
         [SerializeField] private Button resumeBtn;
         [SerializeField] private Button restartBtn;
         [SerializeField] private Button quitBtn;
         [SerializeField] private Button closeBtn;
+        #endregion
 
+        #region Base Methods    
         public override void Open()
         {
             base.Open();
@@ -30,7 +33,9 @@ namespace TowerDefense.UI.Menus
             quitBtn.onClick.RemoveListener(OnQuitBtnClicked);
             closeBtn.onClick.RemoveListener(OnResumeBtnClicked);
         }
+        #endregion
 
+        #region Callbacks
         private void OnResumeBtnClicked()
         {
             Close();
@@ -45,5 +50,6 @@ namespace TowerDefense.UI.Menus
         {
             GameManager.Instance.ReturnToMainMenu();
         }
+        #endregion
     }
 }

@@ -8,13 +8,18 @@ using System.Collections.Generic;
 
 namespace TowerDefense.UI.Menus
 {
+    /// <summary>
+    /// Menu for selecting levels.
+    /// </summary>
     public class LevelSelectionMenu : Menu
     {
+        #region Variables
         [SerializeField] private GameObject levelPrefab;
         [SerializeField] private Transform levelsParent;
         [SerializeField] private Button closeButton;
+        #endregion
 
-
+        #region Base Methods
         public override void Open()
         {
             base.Open();
@@ -27,7 +32,9 @@ namespace TowerDefense.UI.Menus
             base.Close();
             closeButton.onClick.RemoveListener(OnCloseButtonClicked);
         }
+        #endregion
 
+        #region Private Methods
         private void OnCloseButtonClicked()
         {
             MainMenuUIHandler.Instance.OpenMenu(MenuType.MainMenu);
@@ -44,5 +51,6 @@ namespace TowerDefense.UI.Menus
                 levelUI.SetUp(allLevels[i].LevelNumber);
             }
         }
+        #endregion
     }
 }

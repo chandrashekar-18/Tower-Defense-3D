@@ -570,10 +570,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 658f4576ce9cc8e479f1991fca860c05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentGameState: 0
-  _currentLevel: 0
-  _playerLives: 20
-  _isPaused: 0
+  currentGameState: 0
+  currentLevel: 0
+  playerLives: 20
+  isPaused: 0
 --- !u!4 &184487309
 Transform:
   m_ObjectHideFlags: 0
@@ -601,9 +601,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82a4dec81937a874885d3d91caa0d0f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _levels:
-  - {fileID: 0}
-  _currentLevelData: {fileID: 0}
+  levels: []
+  currentLevelData: {fileID: 0}
 --- !u!114 &184487312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -616,7 +615,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9646602e7e1c45e40843c23970ce2483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currency: 0
+  currency: 100
 --- !u!1 &194590530
 GameObject:
   m_ObjectHideFlags: 0
@@ -1664,7 +1663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72f841e7642d4ba18ea0e93faafdc48e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _menuManager: {fileID: 175833121}
+  menuManager: {fileID: 175833121}
 --- !u!1 &930342024
 GameObject:
   m_ObjectHideFlags: 0
@@ -3057,6 +3056,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1186225234}
   - {fileID: 868296129}
-  - {fileID: 97189147}
   - {fileID: 184487309}
   - {fileID: 1728440196}
+  - {fileID: 97189147}

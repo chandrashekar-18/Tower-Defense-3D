@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 6953372571532638598}
   - component: {fileID: 7490063487078521476}
   - component: {fileID: 3362430557304173852}
-  - component: {fileID: 1253494581194363516}
+  - component: {fileID: 6554128212355089485}
   m_Layer: 0
   m_Name: TankEnemy
   m_TagString: Untagged
@@ -143,7 +143,7 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1253494581194363516
+--- !u!114 &6554128212355089485
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,21 +152,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 8068590163765630247}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35598ecf13adaa34aab388c3174c4ee6, type: 3}
+  m_Script: {fileID: 11500000, guid: 4f3a2bd2b9862ed40a29bfd3760a4039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyData: {fileID: 0}
-  _maxHealth: 100
-  _currentHealth: 0
-  _moveSpeed: 2
-  _damage: 10
-  _currencyReward: 40
-  _canAttackTowers: 0
-  _attackRange: 2
-  _attackRate: 1
-  _towerStunDuration: 3
-  _path: []
-  _currentPathIndex: 0
-  _animator: {fileID: 0}
-  _healthBarPrefab: {fileID: 7047260133333704113, guid: 5b7d47b6bd70798459128598571b7d32, type: 3}
-  _healthBarPoint: {fileID: 6886010486449445873}
+  enemyData: {fileID: 0}
+  maxHealth: 100
+  currentHealth: 0
+  moveSpeed: 3
+  damage: 1
+  currencyReward: 20
+  path: []
+  currentPathIndex: 0
+  animator: {fileID: 0}
+  healthBarPrefab: {fileID: 7047260133333704113, guid: 5b7d47b6bd70798459128598571b7d32, type: 3}
+  healthBarPoint: {fileID: 6886010486449445873}
+  damageResistance: 0.25

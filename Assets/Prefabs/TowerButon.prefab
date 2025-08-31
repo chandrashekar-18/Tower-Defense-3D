@@ -133,8 +133,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdd41bd7a3d9ea340906aecf2b31a85d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _towerIcon: {fileID: 6761179772874560107}
-  _towerNameText: {fileID: 0}
-  _towerCostText: {fileID: 0}
-  _button: {fileID: 3614272153399520328}
-  _selectionIndicator: {fileID: 0}
+  towerIcon: {fileID: 6761179772874560107}
+  towerNameText: {fileID: 0}
+  towerCostText: {fileID: 0}
+  button: {fileID: 3614272153399520328}
+  selectionIndicator: {fileID: 0}

@@ -11,15 +11,12 @@ using TowerDefense.UI.Components;
 
 namespace TowerDefense.UI.Menus
 {
+    /// <summary>
+    /// Gameplay menu UI for the game.
+    /// </summary>
     public class GameplayMenu : Menu
     {
-        #region Private Methods
-
-        private void OnPauseBtnClicked()
-        {
-            GameplayUIHandler.Instance.OpenMenu(MenuType.PauseMenu);
-        }
-
+        #region Variables
         [SerializeField] private TextMeshProUGUI currencyText;
         [SerializeField] private TextMeshProUGUI livesText;
         [SerializeField] private TextMeshProUGUI waveText;
@@ -33,15 +30,16 @@ namespace TowerDefense.UI.Menus
         [SerializeField] private GameObject towerSelectionPanel;
         [SerializeField] private Transform towerButtonsContainer;
         [SerializeField] private GameObject towerButtonPrefab;
-
         #endregion
 
+        #region Base Methods
         public override void Open()
         {
             base.Open();
+            Debug.Log("Opening Gameplay Menu");
             ResourceManager.OnCurrencyChanged += UpdateCurrencyDisplay;
-            TowerDefense.Core.GameManager.OnPlayerLivesChanged += UpdateLivesDisplay;
-            TowerDefense.Core.GameManager.OnLevelChanged += UpdateLevelDisplay;
+            GameManager.OnPlayerLivesChanged += UpdateLivesDisplay;
+            GameManager.OnLevelChanged += UpdateLevelDisplay;
             ScoreManager.OnScoreChanged += UpdateScoreDisplay;
             WaveManager.OnWaveStarted += HandleWaveStarted;
             WaveManager.OnTimeBetweenWavesChanged += UpdateNextWaveTimer;
@@ -52,16 +50,18 @@ namespace TowerDefense.UI.Menus
         public override void Close()
         {
             base.Close();
+            Debug.Log("Closing Gameplay Menu");
             ResourceManager.OnCurrencyChanged -= UpdateCurrencyDisplay;
-            TowerDefense.Core.GameManager.OnPlayerLivesChanged -= UpdateLivesDisplay;
-            TowerDefense.Core.GameManager.OnLevelChanged -= UpdateLevelDisplay;
+            GameManager.OnPlayerLivesChanged -= UpdateLivesDisplay;
+            GameManager.OnLevelChanged -= UpdateLevelDisplay;
             ScoreManager.OnScoreChanged -= UpdateScoreDisplay;
             WaveManager.OnWaveStarted -= HandleWaveStarted;
             WaveManager.OnTimeBetweenWavesChanged -= UpdateNextWaveTimer;
             pauseBtn.onClick.RemoveListener(OnPauseBtnClicked);
         }
+        #endregion
 
-
+        #region Callbacks
         private void UpdateCurrencyDisplay(int newAmount)
         {
             currencyText.text = $"$ {newAmount}";
@@ -94,6 +94,13 @@ namespace TowerDefense.UI.Menus
             nextWaveTimerText.text = $"Next Wave: {Mathf.CeilToInt(remainingTime)}s";
         }
 
+        private void OnPauseBtnClicked()
+        {
+            GameplayUIHandler.Instance.OpenMenu(MenuType.PauseMenu);
+        }
+        #endregion
+
+        #region Private Methods
         private void PopulateTowerButtons()
         {
             foreach (Transform child in towerButtonsContainer)
@@ -110,5 +117,6 @@ namespace TowerDefense.UI.Menus
                 towerButton.Initialize(towerData);
             }
         }
+        #endregion
     }
 }

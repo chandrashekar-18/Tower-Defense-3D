@@ -2,7 +2,7 @@ namespace TowerDefense.Core
 {
     public static class GameConstants
     {
-        public static string GAMEPLAY_SCENE = "Gameplay";
-        public static string MAIN_MENU_SCENE = "MainMenu";
+        public const string GameplayScene = "Gameplay";
+        public const string MainMenuScene = "MainMenu";
     }
 }

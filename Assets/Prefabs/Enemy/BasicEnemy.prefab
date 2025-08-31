@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2311287363934933484}
   - component: {fileID: 6470069120195322123}
   - component: {fileID: 568138061788377135}
-  - component: {fileID: 1687478593456858120}
+  - component: {fileID: 7336915220705863512}
   m_Layer: 0
   m_Name: BasicEnemy
   m_TagString: Untagged
@@ -112,7 +112,7 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1687478593456858120
+--- !u!114 &7336915220705863512
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,24 +121,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 5339702903596219646}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35598ecf13adaa34aab388c3174c4ee6, type: 3}
+  m_Script: {fileID: 11500000, guid: 58d7fa535a176b44fba9ee9e218407e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyData: {fileID: 0}
-  _maxHealth: 100
-  _currentHealth: 0
-  _moveSpeed: 3
-  _damage: 1
-  _currencyReward: 20
-  _canAttackTowers: 0
-  _attackRange: 2
-  _attackRate: 1
-  _towerStunDuration: 3
-  _path: []
-  _currentPathIndex: 0
-  _animator: {fileID: 0}
-  _healthBarPrefab: {fileID: 7047260133333704113, guid: 5b7d47b6bd70798459128598571b7d32, type: 3}
-  _healthBarPoint: {fileID: 7644295365832540098}
+  enemyData: {fileID: 0}
+  maxHealth: 100
+  currentHealth: 0
+  moveSpeed: 3
+  damage: 1
+  currencyReward: 20
+  path: []
+  currentPathIndex: 0
+  animator: {fileID: 0}
+  healthBarPrefab: {fileID: 7047260133333704113, guid: 5b7d47b6bd70798459128598571b7d32, type: 3}
+  healthBarPoint: {fileID: 7644295365832540098}
 --- !u!1 &8268958706782456815
 GameObject:
   m_ObjectHideFlags: 0

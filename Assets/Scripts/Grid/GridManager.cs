@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace TowerDefense.Grid
 {
     /// <summary>
-    /// Manages the game grid and pathfinding
+    /// Manages the game grid and pathfinding.
     /// </summary>
     public class GridManager : MonoBehaviour
     {
@@ -24,26 +24,26 @@ namespace TowerDefense.Grid
         }
         #endregion
 
+        #region Variables
+        [SerializeField] private GameObject gridCellPrefab;
+        [SerializeField] private GameObject pathCellPrefab;
+        [SerializeField] private GameObject spawnPointPrefab;
+        [SerializeField] private GameObject exitPointPrefab;
+        [SerializeField] private Transform gridContainer;
+        [SerializeField] private int gridWidth = 15;
+        [SerializeField] private int gridHeight = 10;
+        [SerializeField] private float cellSize = 1f;
+
+        private GridCell[,] grid;
+        private List<Transform> spawnPoints = new List<Transform>();
+        private List<Transform> exitPoints = new List<Transform>();
+        private Dictionary<Transform, List<Vector3>> pathsFromSpawns = new Dictionary<Transform, List<Vector3>>();
+        #endregion
+
         #region Properties
-        [SerializeField] private GameObject _gridCellPrefab;
-        [SerializeField] private GameObject _pathCellPrefab;
-        [SerializeField] private GameObject _spawnPointPrefab;
-        [SerializeField] private GameObject _exitPointPrefab;
-
-        [SerializeField] private Transform _gridContainer;
-
-        [SerializeField] private int _gridWidth = 15;
-        [SerializeField] private int _gridHeight = 10;
-        [SerializeField] private float _cellSize = 1f;
-
-        private GridCell[,] _grid;
-        private List<Transform> _spawnPoints = new List<Transform>();
-        private List<Transform> _exitPoints = new List<Transform>();
-        private Dictionary<Transform, List<Vector3>> _pathsFromSpawns = new Dictionary<Transform, List<Vector3>>();
-
-        public int GridWidth => _gridWidth;
-        public int GridHeight => _gridHeight;
-        public float CellSize => _cellSize;
+        public int GridWidth => gridWidth;
+        public int GridHeight => gridHeight;
+        public float CellSize => cellSize;
         #endregion
 
         #region Events
@@ -51,10 +51,12 @@ namespace TowerDefense.Grid
         public event GridGeneratedDelegate OnGridGenerated;
         #endregion
 
-        void Start()
+        #region Unity Lifecycle
+        private void Start()
         {
             GenerateGrid(LevelManager.Instance.CurrentLevelData);
         }
+        #endregion
 
         #region Public Methods
         public void GenerateGrid(LevelData levelData)
@@ -62,46 +64,46 @@ namespace TowerDefense.Grid
             ClearGrid();
 
             // Set grid dimensions from level data
-            _gridWidth = levelData.GridWidth;
-            _gridHeight = levelData.GridHeight;
+            gridWidth = levelData.GridWidth;
+            gridHeight = levelData.GridHeight;
 
             // Create grid container if needed
-            if (_gridContainer == null)
+            if (gridContainer == null)
             {
                 GameObject container = new GameObject("GridContainer");
-                _gridContainer = container.transform;
-                _gridContainer.position = Vector3.zero;
+                gridContainer = container.transform;
+                gridContainer.position = Vector3.zero;
             }
 
             // Create grid cells
-            _grid = new GridCell[_gridWidth, _gridHeight];
+            grid = new GridCell[gridWidth, gridHeight];
 
-            for (int x = 0; x < _gridWidth; x++)
+            for (int x = 0; x < gridWidth; x++)
             {
-                for (int z = 0; z < _gridHeight; z++)
+                for (int z = 0; z < gridHeight; z++)
                 {
-                    Vector3 position = new Vector3(x * _cellSize, 0, z * _cellSize);
+                    Vector3 position = new Vector3(x * cellSize, 0, z * cellSize);
 
                     // Determine cell type from level data
                     CellType cellType = levelData.GetCellType(x, z);
 
                     // Create appropriate cell
-                    GameObject cellPrefab = _gridCellPrefab; // Default
+                    GameObject cellPrefab = gridCellPrefab; // Default
 
                     switch (cellType)
                     {
                         case CellType.Path:
-                            cellPrefab = _pathCellPrefab;
+                            cellPrefab = pathCellPrefab;
                             break;
                         case CellType.SpawnPoint:
-                            cellPrefab = _spawnPointPrefab;
+                            cellPrefab = spawnPointPrefab;
                             break;
                         case CellType.ExitPoint:
-                            cellPrefab = _exitPointPrefab;
+                            cellPrefab = exitPointPrefab;
                             break;
                     }
 
-                    GameObject cellObject = Instantiate(cellPrefab, position, Quaternion.identity, _gridContainer);
+                    GameObject cellObject = Instantiate(cellPrefab, position, Quaternion.identity, gridContainer);
                     cellObject.name = $"Cell_{x}_{z}";
 
                     GridCell cell = cellObject.GetComponent<GridCell>();
@@ -111,16 +113,16 @@ namespace TowerDefense.Grid
                     }
 
                     cell.Initialize(x, z, cellType, position);
-                    _grid[x, z] = cell;
+                    grid[x, z] = cell;
 
                     // Track spawn and exit points
                     if (cellType == CellType.SpawnPoint)
                     {
-                        _spawnPoints.Add(cellObject.transform);
+                        spawnPoints.Add(cellObject.transform);
                     }
                     else if (cellType == CellType.ExitPoint)
                     {
-                        _exitPoints.Add(cellObject.transform);
+                        exitPoints.Add(cellObject.transform);
                     }
                 }
             }
@@ -129,15 +131,15 @@ namespace TowerDefense.Grid
             CalculatePathsFromSpawnPoints();
 
             // Notify subscribers
-            OnGridGenerated?.Invoke(_grid);
+            OnGridGenerated?.Invoke(grid);
         }
 
         public bool CanPlaceTower(int x, int z)
         {
-            if (x < 0 || x >= _gridWidth || z < 0 || z >= _gridHeight)
+            if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight)
                 return false;
 
-            return _grid[x, z].CellType == CellType.Empty && !_grid[x, z].HasTower;
+            return grid[x, z].CellType == CellType.Empty && !grid[x, z].HasTower;
         }
 
         public bool CanPlaceTower(Vector3 worldPosition)
@@ -155,11 +157,11 @@ namespace TowerDefense.Grid
             if (!CanPlaceTower(x, z))
                 return false;
 
-            Vector3 position = _grid[x, z].transform.position;
-            position.y += _cellSize / 2; // Adjust height
+            Vector3 position = grid[x, z].transform.position;
+            position.y += cellSize / 2; // Adjust height
 
             tower.transform.position = position;
-            _grid[x, z].SetTower(tower);
+            grid[x, z].SetTower(tower);
 
             return true;
         }
@@ -176,30 +178,30 @@ namespace TowerDefense.Grid
 
         public bool GetGridCoordinates(Vector3 worldPosition, out int x, out int z)
         {
-            x = Mathf.FloorToInt(worldPosition.x / _cellSize);
-            z = Mathf.FloorToInt(worldPosition.z / _cellSize);
+            x = Mathf.FloorToInt(worldPosition.x / cellSize);
+            z = Mathf.FloorToInt(worldPosition.z / cellSize);
 
-            return x >= 0 && x < _gridWidth && z >= 0 && z < _gridHeight;
+            return x >= 0 && x < gridWidth && z >= 0 && z < gridHeight;
         }
 
         public Vector3 GetWorldPosition(int x, int z)
         {
-            return new Vector3(x * _cellSize, 0, z * _cellSize);
+            return new Vector3(x * cellSize, 0, z * cellSize);
         }
 
         public GridCell GetCell(int x, int z)
         {
-            if (x < 0 || x >= _gridWidth || z < 0 || z >= _gridHeight)
+            if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight)
                 return null;
 
-            return _grid[x, z];
+            return grid[x, z];
         }
 
         public GridCell GetCell(Vector3 worldPosition)
         {
             if (GetGridCoordinates(worldPosition, out int x, out int z))
             {
-                return _grid[x, z];
+                return grid[x, z];
             }
 
             return null;
@@ -207,17 +209,17 @@ namespace TowerDefense.Grid
 
         public Transform[] GetSpawnPoints()
         {
-            return _spawnPoints.ToArray();
+            return spawnPoints.ToArray();
         }
 
         public Transform[] GetExitPoints()
         {
-            return _exitPoints.ToArray();
+            return exitPoints.ToArray();
         }
 
         public List<Vector3> GetPathFromSpawnPoint(Transform spawnPoint)
         {
-            if (_pathsFromSpawns.TryGetValue(spawnPoint, out List<Vector3> path))
+            if (pathsFromSpawns.TryGetValue(spawnPoint, out List<Vector3> path))
             {
                 return new List<Vector3>(path); // Return copy
             }
@@ -230,29 +232,29 @@ namespace TowerDefense.Grid
         private void ClearGrid()
         {
             // Clear existing grid
-            if (_grid != null)
+            if (grid != null)
             {
-                for (int x = 0; x < _grid.GetLength(0); x++)
+                for (int x = 0; x < grid.GetLength(0); x++)
                 {
-                    for (int z = 0; z < _grid.GetLength(1); z++)
+                    for (int z = 0; z < grid.GetLength(1); z++)
                     {
-                        if (_grid[x, z] != null)
+                        if (grid[x, z] != null)
                         {
-                            Destroy(_grid[x, z].gameObject);
+                            Destroy(grid[x, z].gameObject);
                         }
                     }
                 }
             }
 
             // Clear lists
-            _spawnPoints.Clear();
-            _exitPoints.Clear();
-            _pathsFromSpawns.Clear();
+            spawnPoints.Clear();
+            exitPoints.Clear();
+            pathsFromSpawns.Clear();
 
             // Clear container
-            if (_gridContainer != null)
+            if (gridContainer != null)
             {
-                foreach (Transform child in _gridContainer)
+                foreach (Transform child in gridContainer)
                 {
                     Destroy(child.gameObject);
                 }
@@ -261,7 +263,7 @@ namespace TowerDefense.Grid
 
         private void CalculatePathsFromSpawnPoints()
         {
-            foreach (Transform spawnPoint in _spawnPoints)
+            foreach (Transform spawnPoint in spawnPoints)
             {
                 // Find closest exit point and calculate path
                 Transform closestExit = FindClosestExitPoint(spawnPoint.position);
@@ -272,26 +274,26 @@ namespace TowerDefense.Grid
                         GetGridCoordinates(closestExit.position, out int endX, out int endZ) ? new Vector2Int(endX, endZ) : Vector2Int.zero
                     );
 
-                    _pathsFromSpawns[spawnPoint] = path;
+                    pathsFromSpawns[spawnPoint] = path;
                 }
             }
         }
 
         private Transform FindClosestExitPoint(Vector3 position)
         {
-            if (_exitPoints.Count == 0)
+            if (exitPoints.Count == 0)
                 return null;
 
-            Transform closest = _exitPoints[0];
+            Transform closest = exitPoints[0];
             float closestDistance = Vector3.Distance(position, closest.position);
 
-            for (int i = 1; i < _exitPoints.Count; i++)
+            for (int i = 1; i < exitPoints.Count; i++)
             {
-                float distance = Vector3.Distance(position, _exitPoints[i].position);
+                float distance = Vector3.Distance(position, exitPoints[i].position);
                 if (distance < closestDistance)
                 {
                     closestDistance = distance;
-                    closest = _exitPoints[i];
+                    closest = exitPoints[i];
                 }
             }
 
@@ -327,11 +329,11 @@ namespace TowerDefense.Grid
             List<Vector2Int> pathCells = new List<Vector2Int>();
 
             // For simplicity, just find all path cells and sort by distance to start
-            for (int x = 0; x < _gridWidth; x++)
+            for (int x = 0; x < gridWidth; x++)
             {
-                for (int z = 0; z < _gridHeight; z++)
+                for (int z = 0; z < gridHeight; z++)
                 {
-                    if (_grid[x, z].CellType == CellType.Path)
+                    if (grid[x, z].CellType == CellType.Path)
                     {
                         pathCells.Add(new Vector2Int(x, z));
                     }

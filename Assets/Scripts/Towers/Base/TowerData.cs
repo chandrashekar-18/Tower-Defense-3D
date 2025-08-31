@@ -3,47 +3,49 @@ using UnityEngine;
 namespace TowerDefense.Towers
 {
     /// <summary>
-    /// ScriptableObject for tower data
+    /// ScriptableObject for tower data.
     /// </summary>
     [CreateAssetMenu(fileName = "New Tower", menuName = "Tower Defense/Tower Data")]
     public class TowerData : ScriptableObject
     {
-        #region Properties
-        [SerializeField] private TowerType _towerType;
-        [SerializeField] private string _towerName;
-        [SerializeField] private string _description;
-        [SerializeField] private int _cost;
-        [SerializeField] private float _range;
-        [SerializeField] private float _fireRate;
-        [SerializeField] private int _damage;
-        [SerializeField] private Sprite _icon;
+        #region Variables
+        [SerializeField] private TowerType towerType;
+        [SerializeField] private string towerName;
+        [SerializeField] private string description;
+        [SerializeField] private int cost;
+        [SerializeField] private float range;
+        [SerializeField] private float fireRate;
+        [SerializeField] private int damage;
+        [SerializeField] private Sprite icon;
+        #endregion
 
-        public TowerType TowerType => _towerType;
-        public string TowerName => _towerName;
-        public string Description => _description;
-        public int Cost => _cost;
-        public float Range => _range;
-        public float FireRate => _fireRate;
-        public int Damage => _damage;
-        public Sprite Icon => _icon;
+        #region Properties
+        public TowerType TowerType => towerType;
+        public string TowerName => towerName;
+        public string Description => description;
+        public int Cost => cost;
+        public float Range => range;
+        public float FireRate => fireRate;
+        public int Damage => damage;
+        public Sprite Icon => icon;
         #endregion
 
         #region Public Methods
         public void Initialize(TowerType type, string name, string description, int cost, float range, float fireRate, int damage)
         {
-            _towerType = type;
-            _towerName = name;
-            _description = description;
-            _cost = cost;
-            _range = range;
-            _fireRate = fireRate;
-            _damage = damage;
+            towerType = type;
+            towerName = name;
+            this.description = description;
+            this.cost = cost;
+            this.range = range;
+            this.fireRate = fireRate;
+            this.damage = damage;
         }
         #endregion
     }
 
     /// <summary>
-    /// Enum for different tower types
+    /// Enum for different tower types.
     /// </summary>
     public enum TowerType
     {

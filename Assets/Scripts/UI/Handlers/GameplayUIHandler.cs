@@ -2,20 +2,24 @@ using UnityEngine;
 using TowerDefense.Core;
 using TowerDefense.Enums;
 using TowerDefense.Towers;
-using TowerDefense.UI.Menus;
 
 namespace TowerDefense.UI.Handlers
 {
+    /// <summary>
+    /// Handles the gameplay UI interactions.
+    /// </summary>
     public class GameplayUIHandler : MonoBehaviour
     {
         #region Variables
-
-        [SerializeField] private MenuManager _menuManager;
+        [SerializeField] private MenuManager menuManager;
         [SerializeField] private TowerController towerController;
-        private GameplayMenu _menu;
+        #endregion
 
+        #region Properties
         public static GameplayUIHandler Instance { get; private set; }
+        #endregion
 
+        #region Unity Lifecycle
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -28,13 +32,8 @@ namespace TowerDefense.UI.Handlers
             ShowScreenForGameState(GameManager.Instance.CurrentGameState);
         }
 
-        #endregion
-
-        #region Unity Callbacks
-
         private void Start()
         {
-            _menu = _menuManager.GetMenu<GameplayMenu>(MenuType.GameplayMenu);
             GameManager.OnGameStateChanged += HandleGameStateChanged;
         }
 
@@ -42,19 +41,12 @@ namespace TowerDefense.UI.Handlers
         {
             GameManager.OnGameStateChanged -= HandleGameStateChanged;
         }
-
-        private void HandleGameStateChanged(GameState newState)
-        {
-            ShowScreenForGameState(newState);
-        }
-
         #endregion
 
         #region Public Methods
-
         public void OpenMenu(MenuType type)
         {
-            _menuManager.OpenMenu(type);
+            menuManager.OpenMenu(type);
         }
         public void SelectTower(int towerTypeIndex)
         {
@@ -73,6 +65,12 @@ namespace TowerDefense.UI.Handlers
 
         #endregion
 
+        #region Private Methods
+        private void HandleGameStateChanged(GameState newState)
+        {
+            ShowScreenForGameState(newState);
+        }
+
         private void ShowScreenForGameState(GameState gameState)
         {
             switch (gameState)
@@ -88,5 +86,6 @@ namespace TowerDefense.UI.Handlers
                     break;
             }
         }
+        #endregion
     }
 }

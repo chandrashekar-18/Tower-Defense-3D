@@ -8,29 +8,30 @@ using TowerDefense.UI.Handlers;
 namespace TowerDefense.UI.Components
 {
     /// <summary>
-    /// UI button for selecting towers
+    /// UI button for selecting towers.
     /// </summary>
     public class TowerButton : MonoBehaviour
     {
+        #region Variables
+        [SerializeField] private Image towerIcon;
+        [SerializeField] private TextMeshProUGUI towerNameText;
+        [SerializeField] private TextMeshProUGUI towerCostText;
+        [SerializeField] private Button button;
+        [SerializeField] private Image selectionIndicator;
+
+        private TowerData towerData;
+        #endregion
+
         #region Properties
-        [SerializeField] private Image _towerIcon;
-        [SerializeField] private TextMeshProUGUI _towerNameText;
-        [SerializeField] private TextMeshProUGUI _towerCostText;
-        [SerializeField] private Button _button;
-        [SerializeField] private Image _selectionIndicator;
-
-        private TowerData _towerData;
-
-        public TowerData TowerData => _towerData;
+        public TowerData TowerData => towerData;
         #endregion
 
         #region Unity Lifecycle
         private void Start()
         {
-            // Register for currency changes to update button interactability
             ResourceManager.OnCurrencyChanged += UpdateButtonInteractability;
             TowerController.OnTowerSelected += UpdateTowerInfo;
-            _button.onClick.AddListener(OnButtonClicked);
+            button.onClick.AddListener(OnButtonClicked);
 
             SetSelected(false);
         }
@@ -39,29 +40,29 @@ namespace TowerDefense.UI.Components
         {
             ResourceManager.OnCurrencyChanged -= UpdateButtonInteractability;
             TowerController.OnTowerSelected -= UpdateTowerInfo;
-            _button.onClick.RemoveListener(OnButtonClicked);
+            button.onClick.RemoveListener(OnButtonClicked);
         }
         #endregion
 
         #region Public Methods
         public void Initialize(TowerData towerData)
         {
-            _towerData = towerData;
+            this.towerData = towerData;
 
-            if (_towerNameText != null)
+            if (towerNameText != null)
             {
-                _towerNameText.text = towerData.TowerName;
+                towerNameText.text = towerData.TowerName;
             }
 
-            if (_towerCostText != null)
+            if (towerCostText != null)
             {
-                _towerCostText.text = $"${towerData.Cost}";
+                towerCostText.text = $"${towerData.Cost}";
             }
 
-            if (_towerIcon != null && towerData.Icon != null)
+            if (towerIcon != null && towerData.Icon != null)
             {
-                _towerIcon.sprite = towerData.Icon;
-                _towerIcon.preserveAspect = true;
+                towerIcon.sprite = towerData.Icon;
+                towerIcon.preserveAspect = true;
             }
 
             UpdateButtonInteractability(ResourceManager.Instance.Currency);
@@ -69,15 +70,14 @@ namespace TowerDefense.UI.Components
 
         public void SetSelected(bool isSelected)
         {
-            if (_selectionIndicator != null)
+            if (selectionIndicator != null)
             {
-                _selectionIndicator.enabled = isSelected;
+                selectionIndicator.enabled = isSelected;
             }
         }
         #endregion
 
-        #region Private Methods
-
+        #region Callbacks
         private void UpdateTowerInfo(TowerType towerType, TowerData towerData)
         {
             SetSelected(TowerData.TowerType == towerType);
@@ -94,9 +94,9 @@ namespace TowerDefense.UI.Components
 
         private void UpdateButtonInteractability(int currentCurrency)
         {
-            if (_button != null && _towerData != null)
+            if (button != null && towerData != null)
             {
-                _button.interactable = currentCurrency >= _towerData.Cost;
+                button.interactable = currentCurrency >= towerData.Cost;
             }
         }
         #endregion

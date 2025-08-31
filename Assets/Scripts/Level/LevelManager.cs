@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace TowerDefense.Level
 {
     /// <summary>
-    /// Manages level loading and level data
+    /// Manages level loading and level data.
     /// </summary>
     public class LevelManager : MonoBehaviour
     {
@@ -28,13 +28,15 @@ namespace TowerDefense.Level
         }
         #endregion
 
-        #region Properties
-        [SerializeField] private List<LevelData> _levels = new List<LevelData>();
-        [SerializeField] private LevelData _currentLevelData;
+        #region Variables
+        [SerializeField] private List<LevelData> levels = new List<LevelData>();
+        [SerializeField] private LevelData currentLevelData;
+        #endregion
 
-        public List<LevelData> AllLevels => _levels;
-        public int MaxLevel => _levels.Count;
-        public LevelData CurrentLevelData => _currentLevelData;
+        #region Properties
+        public List<LevelData> AllLevels => levels;
+        public int MaxLevel => levels.Count;
+        public LevelData CurrentLevelData => currentLevelData;
         #endregion
 
         #region Events
@@ -45,14 +47,14 @@ namespace TowerDefense.Level
         #region Public Methods
         public void LoadLevel(int levelIndex)
         {
-            if (levelIndex <= 0 || levelIndex > _levels.Count)
+            if (levelIndex <= 0 || levelIndex > levels.Count)
             {
                 Debug.LogError($"Invalid level index: {levelIndex}");
                 return;
             }
 
             // Load the level scene if needed
-            SceneLoader.Instance.LoadScene(GameConstants.GAMEPLAY_SCENE);
+            SceneLoader.Instance.LoadScene(GameConstants.GameplayScene);
 
             StartCoroutine(LoadLevelRoutine(levelIndex));
         }
@@ -62,23 +64,23 @@ namespace TowerDefense.Level
         private void LoadLevelData()
         {
             // Load level data from resources or JSON
-            _levels.Clear();
+            levels.Clear();
 
             // Try to load from Resources first
             LevelData[] resourceLevels = Resources.LoadAll<LevelData>("Levels");
             if (resourceLevels != null && resourceLevels.Length > 0)
             {
-                _levels.AddRange(resourceLevels);
+                levels.AddRange(resourceLevels);
             }
 
             // If we don't have at least 3 levels, load from JSON
-            if (_levels.Count < 3)
+            if (levels.Count < 3)
             {
                 LoadLevelsFromJSON();
             }
 
             // If we still don't have levels, create defaults
-            if (_levels.Count < 3)
+            if (levels.Count < 3)
             {
                 CreateDefaultLevels();
             }
@@ -98,7 +100,7 @@ namespace TowerDefense.Level
                 LevelData level = ScriptableObject.CreateInstance<LevelData>();
                 level.LevelNumber = i + 1;
                 level.InitializeDefaultValues();
-                _levels.Add(level);
+                levels.Add(level);
             }
         }
 
@@ -107,16 +109,10 @@ namespace TowerDefense.Level
             // Wait for scene to load
             yield return new WaitForEndOfFrame();
 
-            _currentLevelData = _levels[levelIndex - 1];
-
-            // Setup the grid
-            // GridManager.Instance.GenerateGrid(_currentLevelData);
-
-            // Setup wave manager
-            // WaveManager.Instance.InitializeWaves(_currentLevelData);
-
+            currentLevelData = levels[levelIndex - 1];
+            
             // Notify subscribers
-            OnLevelLoaded?.Invoke(_currentLevelData);
+            OnLevelLoaded?.Invoke(currentLevelData);
         }
         #endregion
     }

@@ -3,9 +3,12 @@ using TowerDefense.Enums;
 
 namespace TowerDefense.UI.Handlers
 {
+    /// <summary>
+    /// Handles the main menu UI interactions.
+    /// </summary>
     public class MainMenuUIHandler : MonoBehaviour
     {
-        [SerializeField] private MenuManager _menuManager;
+        [SerializeField] private MenuManager menuManager;
 
         public static MainMenuUIHandler Instance { get; private set; }
 
@@ -21,7 +24,7 @@ namespace TowerDefense.UI.Handlers
 
         public void OpenMenu(MenuType menuType)
         {
-            _menuManager.OpenMenu(menuType);
+            menuManager.OpenMenu(menuType);
         }
     }
 }

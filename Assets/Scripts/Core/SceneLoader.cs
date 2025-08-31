@@ -3,6 +3,9 @@ using UnityEngine.SceneManagement;
 
 namespace TowerDefense.Core
 {
+    /// <summary>
+    /// Handles loading Unity scenes.
+    /// </summary>
     public class SceneLoader : MonoBehaviour
     {
         public static SceneLoader Instance { get; private set; }

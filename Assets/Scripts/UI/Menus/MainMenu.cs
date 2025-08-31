@@ -5,12 +5,18 @@ using TowerDefense.UI.Handlers;
 
 namespace TowerDefense.UI.Menus
 {
+    /// <summary>
+    /// Main menu UI for the game.
+    /// </summary>
     public class MainMenu : Menu
     {
+        #region Variables
         [SerializeField] private Button playButton;
         [SerializeField] private Button instructionsButton;
         [SerializeField] private Button quitButton;
+        #endregion
 
+        #region Base Methods
         public override void Open()
         {
             base.Open();
@@ -26,7 +32,9 @@ namespace TowerDefense.UI.Menus
             instructionsButton.onClick.RemoveListener(OnInstructionsBtnClicked);
             quitButton.onClick.RemoveListener(OnQuitBtnClicked);
         }
+        #endregion
 
+        #region Private Methods
         private void OnPlayBtnClicked()
         {
             MainMenuUIHandler.Instance.OpenMenu(Enums.MenuType.LevelSelectionMenu);
@@ -41,5 +49,6 @@ namespace TowerDefense.UI.Menus
         {
             GameManager.Instance.QuitGame();
         }
+        #endregion
     }
 }

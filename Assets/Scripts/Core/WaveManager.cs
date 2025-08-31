@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace TowerDefense.Core
 {
     /// <summary>
-    /// Manages enemy waves and spawning
+    /// Manages enemy waves and spawning.
     /// </summary>
     public class WaveManager : MonoBehaviour
     {
@@ -25,23 +25,24 @@ namespace TowerDefense.Core
 
             Instance = this;
         }
+        #endregion
 
+        #region Variables
+        [SerializeField] private List<WaveData> waves = new List<WaveData>();
+        [SerializeField] private int currentWaveIndex = -1;
+        [SerializeField] private int remainingEnemiesInWave = 0;
+        [SerializeField] private bool isSpawning = false;
+        [SerializeField] private float timeBetweenWaves = 5f;
+
+        private EnemyFactory enemyFactory;
         #endregion
 
         #region Properties
-        [SerializeField] private List<WaveData> _waves = new List<WaveData>();
-        [SerializeField] private int _currentWaveIndex = -1;
-        [SerializeField] private int _remainingEnemiesInWave = 0;
-        [SerializeField] private bool _isSpawning = false;
-        [SerializeField] private float _timeBetweenWaves = 5f;
-
-        private EnemyFactory _enemyFactory;
-
-        public int CurrentWaveIndex => _currentWaveIndex;
-        public int TotalWaves => _waves.Count;
-        public bool IsLastWave => _currentWaveIndex >= _waves.Count - 1;
-        public int RemainingEnemies => _remainingEnemiesInWave;
-        public bool IsSpawning => _isSpawning;
+        public int CurrentWaveIndex => currentWaveIndex;
+        public int TotalWaves => waves.Count;
+        public bool IsLastWave => currentWaveIndex >= waves.Count - 1;
+        public int RemainingEnemies => remainingEnemiesInWave;
+        public bool IsSpawning => isSpawning;
         #endregion
 
         #region Events
@@ -54,10 +55,10 @@ namespace TowerDefense.Core
         public delegate void AllWavesCompletedDelegate();
         public static event AllWavesCompletedDelegate OnAllWavesCompleted;
 
-        public delegate void EnemySpawnedDelegate(EnemyController enemy);
+        public delegate void EnemySpawnedDelegate(Enemy enemy);
         public static event EnemySpawnedDelegate OnEnemySpawned;
 
-        public delegate void EnemyDefeatedDelegate(EnemyController enemy);
+        public delegate void EnemyDefeatedDelegate(Enemy enemy);
         public static event EnemyDefeatedDelegate OnEnemyDefeated;
 
         public delegate void TimeBetweenWavesChangedDelegate(float remainingTime);
@@ -67,10 +68,10 @@ namespace TowerDefense.Core
         #region Unity Lifecycle
         private void Start()
         {
-            _enemyFactory = GetComponent<EnemyFactory>();
-            if (_enemyFactory == null)
+            enemyFactory = GetComponent<EnemyFactory>();
+            if (enemyFactory == null)
             {
-                _enemyFactory = gameObject.AddComponent<EnemyFactory>();
+                enemyFactory = gameObject.AddComponent<EnemyFactory>();
             }
 
             InitializeWaves(LevelManager.Instance.CurrentLevelData);
@@ -80,24 +81,24 @@ namespace TowerDefense.Core
         #region Public Methods
         public void InitializeWaves(LevelData levelData)
         {
-            _waves = new List<WaveData>(levelData.Waves);
-            _currentWaveIndex = -1;
-            _remainingEnemiesInWave = 0;
-            _isSpawning = false;
+            waves = new List<WaveData>(levelData.Waves);
+            currentWaveIndex = -1;
+            remainingEnemiesInWave = 0;
+            isSpawning = false;
 
             // Start first wave after a delay
-            StartCoroutine(StartWaveAfterDelay(_timeBetweenWaves));
+            StartCoroutine(StartWaveAfterDelay(timeBetweenWaves));
         }
 
         public void StartNextWave()
         {
-            if (_isSpawning) return;
+            if (isSpawning) return;
 
-            _currentWaveIndex++;
+            currentWaveIndex++;
 
-            if (_currentWaveIndex < _waves.Count)
+            if (currentWaveIndex < waves.Count)
             {
-                StartCoroutine(SpawnWave(_waves[_currentWaveIndex]));
+                StartCoroutine(SpawnWave(waves[currentWaveIndex]));
             }
             else
             {
@@ -109,20 +110,20 @@ namespace TowerDefense.Core
             }
         }
 
-        public void EnemyDefeated(EnemyController enemy)
+        public void EnemyDefeated(Enemy enemy)
         {
-            _remainingEnemiesInWave--;
+            remainingEnemiesInWave--;
             OnEnemyDefeated?.Invoke(enemy);
 
             // Check if wave is complete
-            if (_remainingEnemiesInWave <= 0 && !_isSpawning)
+            if (remainingEnemiesInWave <= 0 && !isSpawning)
             {
-                OnWaveCompleted?.Invoke(_currentWaveIndex);
+                OnWaveCompleted?.Invoke(currentWaveIndex);
 
                 if (!IsLastWave)
                 {
                     // Start next wave after delay
-                    StartCoroutine(StartWaveAfterDelay(_timeBetweenWaves));
+                    StartCoroutine(StartWaveAfterDelay(timeBetweenWaves));
                 }
                 else
                 {
@@ -153,14 +154,14 @@ namespace TowerDefense.Core
 
         private IEnumerator SpawnWave(WaveData waveData)
         {
-            _isSpawning = true;
-            OnWaveStarted?.Invoke(_currentWaveIndex, waveData);
+            isSpawning = true;
+            OnWaveStarted?.Invoke(currentWaveIndex, waveData);
 
             // Count total enemies in wave
-            _remainingEnemiesInWave = 0;
+            remainingEnemiesInWave = 0;
             foreach (var enemyGroup in waveData.EnemyGroups)
             {
-                _remainingEnemiesInWave += enemyGroup.Count;
+                remainingEnemiesInWave += enemyGroup.Count;
             }
 
             // Spawn enemy groups
@@ -179,17 +180,17 @@ namespace TowerDefense.Core
                 yield return new WaitForSeconds(waveData.DelayBetweenGroups);
             }
 
-            _isSpawning = false;
+            isSpawning = false;
 
             // Check if wave is already complete (all enemies defeated during spawning)
-            if (_remainingEnemiesInWave <= 0)
+            if (remainingEnemiesInWave <= 0)
             {
-                OnWaveCompleted?.Invoke(_currentWaveIndex);
+                OnWaveCompleted?.Invoke(currentWaveIndex);
 
                 if (!IsLastWave)
                 {
                     // Start next wave after delay
-                    StartCoroutine(StartWaveAfterDelay(_timeBetweenWaves));
+                    StartCoroutine(StartWaveAfterDelay(timeBetweenWaves));
                 }
                 else
                 {
@@ -218,7 +219,7 @@ namespace TowerDefense.Core
             List<Vector3> path = GridManager.Instance.GetPathFromSpawnPoint(spawnPoint);
 
             // Create enemy
-            EnemyController enemy = _enemyFactory.CreateEnemy(enemyType, spawnPoint.position, path);
+            Enemy enemy = enemyFactory.CreateEnemy(enemyType, spawnPoint.position, path);
 
             // Register for defeat event
             enemy.OnDefeated += EnemyDefeated;

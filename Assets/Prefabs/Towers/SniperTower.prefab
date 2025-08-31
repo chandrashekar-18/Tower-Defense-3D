@@ -123,19 +123,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab7de0c71f9cf9d46ae13f190a1a3782, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _towerData: {fileID: 0}
-  _attackRange: 3
-  _attackRate: 1
-  _damage: 10
-  _rotationSpeed: 5
-  _turretHead: {fileID: 40079050020839550}
-  _firingPoint: {fileID: 322610682790726357}
-  _projectilePrefab: {fileID: 3420418640787984457, guid: 84300e53c91620246ad0103f5f2884e9, type: 3}
-  _enemyLayerMask:
+  towerData: {fileID: 0}
+  attackRange: 3
+  attackRate: 1
+  damage: 10
+  rotationSpeed: 5
+  turretHead: {fileID: 40079050020839550}
+  firingPoint: {fileID: 322610682790726357}
+  projectilePrefab: {fileID: 3420418640787984457, guid: 84300e53c91620246ad0103f5f2884e9, type: 3}
+  enemyLayerMask:
     serializedVersion: 2
     m_Bits: 0
-  _criticalHitChance: 0.25
-  _criticalHitMultiplier: 2
+  criticalHitChance: 0.25
+  criticalHitMultiplier: 2
 --- !u!1 &768196073136316261
 GameObject:
   m_ObjectHideFlags: 0

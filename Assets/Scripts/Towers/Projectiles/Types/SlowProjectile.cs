@@ -4,31 +4,33 @@ namespace TowerDefense.Towers
 {
     public class SlowProjectile : Projectile
     {
-        [SerializeField] private float _slowEffect = 0.5f;
-        [SerializeField] private float _slowDuration = 3f;
+        #region Variables
+        [SerializeField] private float slowEffect = 0.5f;
+        [SerializeField] private float slowDuration = 3f;
+        #endregion
 
+        #region Public Methods
         public void SetSlowEffect(float effect, float duration)
         {
-            _slowEffect = Mathf.Clamp01(effect);
-            _slowDuration = duration;
+            slowEffect = Mathf.Clamp01(effect);
+            slowDuration = duration;
         }
+        #endregion
 
+        #region Protected Methods
         protected override void OnHit()
         {
-            // Deal damage
-            _target.TakeDamage(_damage);
+            target.TakeDamage(damage);
 
-            // Apply slow effect
-            _target.Slow(_slowEffect, _slowDuration);
+            target.Slow(slowEffect, slowDuration);
 
-            // Spawn impact effect
-            if (_impactEffect != null)
+            if (impactEffect != null)
             {
-                Instantiate(_impactEffect, transform.position, transform.rotation);
+                Instantiate(impactEffect, transform.position, transform.rotation);
             }
 
-            // Destroy projectile
             Destroy(gameObject);
         }
+        #endregion
     }
 }

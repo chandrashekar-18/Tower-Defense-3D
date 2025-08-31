@@ -17,6 +17,5 @@ namespace TowerDefense.Enums
         Playing,
         Paused,
         GameOver,
-        Victory
     }
 }

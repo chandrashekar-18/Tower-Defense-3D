@@ -4,64 +4,72 @@ using System.Collections.Generic;
 namespace TowerDefense.Utils
 {
     /// <summary>
-    /// Generic object pool for reusing game objects
+    /// Generic object pool for reusing game objects.
     /// </summary>
     public class ObjectPool<T> where T : Component
     {
-        private T _prefab;
-        private Transform _container;
-        private List<T> _pool;
-        private int _initialSize;
-        
+        #region Variables
+        private T prefab;
+        private Transform container;
+        private List<T> pool;
+        private int initialSize;
+        #endregion
+
+        #region Constructor
         public ObjectPool(T prefab, int initialSize, Transform container = null)
         {
-            _prefab = prefab;
-            _initialSize = initialSize;
-            _container = container;
-            
-            if (_container == null)
+            this.prefab = prefab;
+            this.initialSize = initialSize;
+            this.container = container;
+
+            if (this.container == null)
             {
                 GameObject containerObj = new GameObject($"{typeof(T).Name}Pool");
-                _container = containerObj.transform;
+                this.container = containerObj.transform;
             }
-            
-            _pool = new List<T>();
-            
+
+            pool = new List<T>();
+
             // Initialize pool
-            for (int i = 0; i < _initialSize; i++)
+            for (int i = 0; i < this.initialSize; i++)
             {
                 CreateNewInstance();
             }
         }
-        
+        #endregion
+
+        #region Public Methods
         public T Get()
         {
             // Find inactive object in pool
-            foreach (T obj in _pool)
+            foreach (T obj in pool)
             {
-                if (obj.gameObject.activeInHierarchy == false)
+                if (!obj.gameObject.activeInHierarchy)
                 {
                     obj.gameObject.SetActive(true);
                     return obj;
                 }
             }
-            
+
             // No inactive objects found, create a new one
             return CreateNewInstance();
         }
-        
+
         public void Return(T obj)
         {
             obj.gameObject.SetActive(false);
         }
-        
+        #endregion
+
+        #region Private Methods
         private T CreateNewInstance()
         {
-            T instance = Object.Instantiate(_prefab, _container);
+            T instance = Object.Instantiate(prefab, container);
             instance.gameObject.SetActive(false);
-            _pool.Add(instance);
-            
+            pool.Add(instance);
+
             return instance;
         }
+        #endregion
     }
 }

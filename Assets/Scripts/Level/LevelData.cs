@@ -4,87 +4,89 @@ using System.Collections.Generic;
 namespace TowerDefense.Level
 {
     /// <summary>
-    /// ScriptableObject for level data
+    /// ScriptableObject for level data.
     /// </summary>
     [CreateAssetMenu(fileName = "New Level", menuName = "Tower Defense/Level Data")]
     public class LevelData : ScriptableObject
     {
-        #region Properties
-        [SerializeField] private int _levelNumber;
-        [SerializeField] private string _levelName;
-        [SerializeField] private int _gridWidth = 15;
-        [SerializeField] private int _gridHeight = 10;
-        [SerializeField] private CellTypeData[,] _gridData;
-        [SerializeField] private List<WaveData> _waves = new List<WaveData>();
-        [SerializeField] private int _startingCurrency = 300;
+        #region Variables
+        [SerializeField] private int levelNumber;
+        [SerializeField] private string levelName;
+        [SerializeField] private int gridWidth = 15;
+        [SerializeField] private int gridHeight = 10;
+        [SerializeField] private CellTypeData[,] gridData;
+        [SerializeField] private List<WaveData> waves = new List<WaveData>();
+        [SerializeField] private int startingCurrency = 300;
+        #endregion
 
-        public int LevelNumber { get => _levelNumber; set => _levelNumber = value; }
-        public string LevelName => _levelName;
-        public int GridWidth => _gridWidth;
-        public int GridHeight => _gridHeight;
-        public List<WaveData> Waves => _waves;
-        public int StartingCurrency => _startingCurrency;
+        #region Properties
+        public int LevelNumber { get => levelNumber; set => levelNumber = value; }
+        public string LevelName => levelName;
+        public int GridWidth => gridWidth;
+        public int GridHeight => gridHeight;
+        public List<WaveData> Waves => waves;
+        public int StartingCurrency => startingCurrency;
         #endregion
 
         #region Public Methods
         public void InitializeDefaultValues()
         {
-            _levelName = $"Level {_levelNumber}";
-            _gridWidth = 15;
-            _gridHeight = 10;
-            _startingCurrency = 300;
+            levelName = $"Level {levelNumber}";
+            gridWidth = 15;
+            gridHeight = 10;
+            startingCurrency = 300;
 
             // Initialize grid data
-            _gridData = new CellTypeData[_gridWidth, _gridHeight];
+            gridData = new CellTypeData[gridWidth, gridHeight];
 
-            for (int x = 0; x < _gridWidth; x++)
+            for (int x = 0; x < gridWidth; x++)
             {
-                for (int z = 0; z < _gridHeight; z++)
+                for (int z = 0; z < gridHeight; z++)
                 {
                     // Default to empty cells
-                    _gridData[x, z] = new CellTypeData { CellType = Grid.CellType.Empty };
+                    gridData[x, z] = new CellTypeData { CellType = Grid.CellType.Empty };
                 }
             }
 
             // Create a simple path
-            CreateDefaultPath();
+            // CreateDefaultPath();
 
             // Create default waves
-            CreateDefaultWaves();
+            // CreateDefaultWaves();
         }
 
         public Grid.CellType GetCellType(int x, int z)
         {
-            if (x < 0 || x >= _gridWidth || z < 0 || z >= _gridHeight || _gridData == null)
+            if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight || gridData == null)
                 return Grid.CellType.Empty;
 
-            return _gridData[x, z].CellType;
+            return gridData[x, z].CellType;
         }
 
         public void SetCellType(int x, int z, Grid.CellType cellType)
         {
-            if (x < 0 || x >= _gridWidth || z < 0 || z >= _gridHeight || _gridData == null)
+            if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight || gridData == null)
                 return;
 
-            _gridData[x, z].CellType = cellType;
+            gridData[x, z].CellType = cellType;
         }
 
         public void AddWave(WaveData wave)
         {
-            _waves.Add(wave);
+            waves.Add(wave);
         }
 
         public void RemoveWave(int index)
         {
-            if (index >= 0 && index < _waves.Count)
+            if (index >= 0 && index < waves.Count)
             {
-                _waves.RemoveAt(index);
+                waves.RemoveAt(index);
             }
         }
 
         public void ClearWaves()
         {
-            _waves.Clear();
+            waves.Clear();
         }
 
         public string ToJson()
@@ -101,55 +103,55 @@ namespace TowerDefense.Level
         #endregion
 
         #region Private Methods
-        private void CreateDefaultPath()
-        {
-            // Create a simple path from left to right
-            int pathZ = _gridHeight / 2;
+        // private void CreateDefaultPath()
+        // {
+        //     // Create a simple path from left to right
+        //     int pathZ = gridHeight / 2;
 
-            // Add spawn point on left
-            SetCellType(0, pathZ, Grid.CellType.SpawnPoint);
+        //     // Add spawn point on left
+        //     SetCellType(0, pathZ, Grid.CellType.SpawnPoint);
 
-            // Add path
-            for (int x = 1; x < _gridWidth - 1; x++)
-            {
-                SetCellType(x, pathZ, Grid.CellType.Path);
-            }
+        //     // Add path
+        //     for (int x = 1; x < gridWidth - 1; x++)
+        //     {
+        //         SetCellType(x, pathZ, Grid.CellType.Path);
+        //     }
 
-            // Add exit point on right
-            SetCellType(_gridWidth - 1, pathZ, Grid.CellType.ExitPoint);
-        }
+        //     // Add exit point on right
+        //     SetCellType(gridWidth - 1, pathZ, Grid.CellType.ExitPoint);
+        // }
 
-        private void CreateDefaultWaves()
-        {
-            // Create 3 increasingly difficult waves
-            for (int i = 0; i < 3; i++)
-            {
-                WaveData wave = new WaveData();
-                wave.DelayBetweenGroups = 5f;
+        // private void CreateDefaultWaves()
+        // {
+        //     // Create 3 increasingly difficult waves
+        //     for (int i = 0; i < 3; i++)
+        //     {
+        //         WaveData wave = new WaveData();
+        //         wave.DelayBetweenGroups = 5f;
 
-                // Add enemy groups
-                int groupCount = 2 + i;
-                for (int g = 0; g < groupCount; g++)
-                {
-                    EnemyGroupData group = new EnemyGroupData();
-                    group.EnemyType = (g % 2 == 0) ? Enemies.EnemyType.Basic :
-                                     (i >= 2) ? Enemies.EnemyType.TowerAttacker :
-                                     (i >= 1) ? Enemies.EnemyType.Tank :
-                                     Enemies.EnemyType.Fast;
-                    group.Count = 5 + (i * 3);
-                    group.SpawnDelay = 1f;
+        //         // Add enemy groups
+        //         int groupCount = 2 + i;
+        //         for (int g = 0; g < groupCount; g++)
+        //         {
+        //             EnemyGroupData group = new EnemyGroupData();
+        //             group.EnemyType = (g % 2 == 0) ? Enemies.EnemyType.Basic :
+        //                              (i >= 2) ? Enemies.EnemyType.TowerAttacker :
+        //                              (i >= 1) ? Enemies.EnemyType.Tank :
+        //                              Enemies.EnemyType.Fast;
+        //             group.Count = 5 + (i * 3);
+        //             group.SpawnDelay = 1f;
 
-                    wave.EnemyGroups.Add(group);
-                }
+        //             wave.EnemyGroups.Add(group);
+        //         }
 
-                _waves.Add(wave);
-            }
-        }
+        //         waves.Add(wave);
+        //     }
+        // }
         #endregion
     }
 
     /// <summary>
-    /// Serializable struct for cell type data
+    /// Serializable struct for cell type data.
     /// </summary>
     [System.Serializable]
     public struct CellTypeData
@@ -158,7 +160,7 @@ namespace TowerDefense.Level
     }
 
     /// <summary>
-    /// Serializable class for level data
+    /// Serializable class for level data.
     /// </summary>
     [System.Serializable]
     public class LevelDataSerializable

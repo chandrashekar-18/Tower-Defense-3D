@@ -3,7 +3,7 @@ using UnityEngine;
 namespace TowerDefense.Core
 {
     /// <summary>
-    /// Manages player resources like currency
+    /// Manages player resources like currency.
     /// </summary>
     public class ResourceManager : MonoBehaviour
     {
@@ -23,9 +23,9 @@ namespace TowerDefense.Core
         }
         #endregion
 
-        #region Properties
-        [SerializeField] private int _currency = 0;
-        public int Currency => _currency;
+        #region Variables
+        [SerializeField] private int currency = 0;
+        public int Currency => currency;
         #endregion
 
         #region Events
@@ -36,28 +36,28 @@ namespace TowerDefense.Core
         #region Public Methods
         public void Initialize()
         {
-            _currency = 300; // Starting currency
-            OnCurrencyChanged?.Invoke(_currency);
+            currency = 300; // Starting currency
+            OnCurrencyChanged?.Invoke(currency);
         }
 
         public bool CanAfford(int cost)
         {
-            return _currency >= cost;
+            return currency >= cost;
         }
 
         public bool SpendCurrency(int amount)
         {
             if (!CanAfford(amount)) return false;
 
-            _currency -= amount;
-            OnCurrencyChanged?.Invoke(_currency);
+            currency -= amount;
+            OnCurrencyChanged?.Invoke(currency);
             return true;
         }
 
         public void AddCurrency(int amount)
         {
-            _currency += amount;
-            OnCurrencyChanged?.Invoke(_currency);
+            currency += amount;
+            OnCurrencyChanged?.Invoke(currency);
         }
         #endregion
     }

@@ -5,7 +5,7 @@ using TowerDefense.Enums;
 namespace TowerDefense.Core
 {
     /// <summary>
-    /// Central manager for game state and flow
+    /// Central manager for game state and flow.
     /// </summary>
     public class GameManager : MonoBehaviour
     {
@@ -22,27 +22,29 @@ namespace TowerDefense.Core
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
         }
 
-        void Start()
+        private void Start()
         {
             InitializeGame();
         }
         #endregion
 
+        #region Variables
+        [SerializeField] private GameState currentGameState = GameState.MainMenu;
+        [SerializeField] private int currentLevel = 0;
+        [SerializeField] private int playerLives = 20;
+        [SerializeField] private bool isPaused = false;
+        #endregion
+
         #region Properties
-        [SerializeField] private GameState _currentGameState = GameState.MainMenu;
-        public GameState CurrentGameState => _currentGameState;
+        public GameState CurrentGameState => currentGameState;
 
-        [SerializeField] private int _currentLevel = 0;
-        public int CurrentLevel => _currentLevel;
+        public int CurrentLevel => currentLevel;
 
-        [SerializeField] private int _playerLives = 20;
-        public int PlayerLives => _playerLives;
+        public int PlayerLives => playerLives;
 
-        [SerializeField] private bool _isPaused = false;
-        public bool IsPaused => _isPaused;
+        public bool IsPaused => isPaused;
         #endregion
 
         #region Events
@@ -67,46 +69,46 @@ namespace TowerDefense.Core
 
         public void StartGame(int level)
         {
-            _currentLevel = level;
-            _playerLives = 20;
+            currentLevel = level;
+            playerLives = 20;
 
             ChangeGameState(GameState.Playing);
-            OnLevelChanged?.Invoke(_currentLevel);
-            OnPlayerLivesChanged?.Invoke(_playerLives);
+            OnLevelChanged?.Invoke(currentLevel);
+            OnPlayerLivesChanged?.Invoke(playerLives);
 
             // Start the level
-            LevelManager.Instance.LoadLevel(_currentLevel);
+            LevelManager.Instance.LoadLevel(currentLevel);
         }
 
         public void PauseGame()
         {
-            if (_currentGameState != GameState.Playing) return;
+            if (currentGameState != GameState.Playing) return;
 
-            _isPaused = true;
+            isPaused = true;
             Time.timeScale = 0f;
             ChangeGameState(GameState.Paused);
         }
 
         public void ResumeGame()
         {
-            if (_currentGameState != GameState.Paused) return;
+            if (currentGameState != GameState.Paused) return;
 
-            _isPaused = false;
+            isPaused = false;
             Time.timeScale = 1f;
             ChangeGameState(GameState.Playing);
         }
 
         public void GameOver(bool victory = false)
         {
-            ChangeGameState( GameState.GameOver);
+            ChangeGameState(GameState.GameOver);
         }
 
         public void ReturnToMainMenu()
         {
             Time.timeScale = 1f;
-            _isPaused = false;
+            isPaused = false;
             ChangeGameState(GameState.MainMenu);
-            SceneLoader.Instance.LoadScene(GameConstants.MAIN_MENU_SCENE);
+            SceneLoader.Instance.LoadScene(GameConstants.MainMenuScene);
         }
 
         public void QuitGame()
@@ -120,31 +122,30 @@ namespace TowerDefense.Core
 
         public void LoadNextLevel()
         {
-            _currentLevel++;
-            OnLevelChanged?.Invoke(_currentLevel);
+            currentLevel++;
+            OnLevelChanged?.Invoke(currentLevel);
 
-            if (_currentLevel > LevelManager.Instance.MaxLevel)
+            if (currentLevel > LevelManager.Instance.MaxLevel)
             {
                 GameOver(true); // Victory
                 return;
             }
 
-            LevelManager.Instance.LoadLevel(_currentLevel);
+            LevelManager.Instance.LoadLevel(currentLevel);
             ChangeGameState(GameState.Playing);
         }
 
         public void RestartLevel()
         {
-            LevelManager.Instance.LoadLevel(_currentLevel);
-            ChangeGameState(GameState.Playing);
+            LevelManager.Instance.LoadLevel(currentLevel);
         }
 
         public void ReducePlayerLives(int amount = 1)
         {
-            _playerLives -= amount;
-            OnPlayerLivesChanged?.Invoke(_playerLives);
+            playerLives -= amount;
+            OnPlayerLivesChanged?.Invoke(playerLives);
 
-            if (_playerLives <= 0)
+            if (playerLives <= 0)
             {
                 GameOver(false);
             }
@@ -154,7 +155,7 @@ namespace TowerDefense.Core
         #region Helper Methods
         private void ChangeGameState(GameState newState)
         {
-            _currentGameState = newState;
+            currentGameState = newState;
             OnGameStateChanged?.Invoke(newState);
         }
         #endregion

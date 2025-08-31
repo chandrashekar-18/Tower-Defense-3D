@@ -3,6 +3,9 @@ using TowerDefense.Enums;
 
 namespace TowerDefense.UI.Menus
 {
+    /// <summary>
+    /// Base class for all menu UI elements.
+    /// </summary>
     public class Menu : MonoBehaviour
     {
         public MenuType menuType;

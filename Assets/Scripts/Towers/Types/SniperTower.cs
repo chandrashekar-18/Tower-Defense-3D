@@ -2,39 +2,42 @@ using UnityEngine;
 
 namespace TowerDefense.Towers
 {
+    /// <summary>
+    /// Tower that deals high damage with a chance for critical hits.
+    /// </summary>
     public class SniperTower : Tower
     {
-        [SerializeField] private float _criticalHitChance = 0.25f;
-        [SerializeField] private float _criticalHitMultiplier = 2f;
+        #region Variables
+        [SerializeField] private float criticalHitChance = 0.25f;
+        [SerializeField] private float criticalHitMultiplier = 2f;
+        #endregion
 
+        #region Protected Methods
         protected override void Attack()
         {
-            if (_currentTarget == null)
+            if (currentTarget == null)
                 return;
 
-            // Calculate damage
-            int damage = _damage;
+            int damage = this.damage;
 
-            // Check for critical hit
-            if (Random.value < _criticalHitChance)
+            if (Random.value < criticalHitChance)
             {
-                damage = Mathf.RoundToInt(damage * _criticalHitMultiplier);
+                damage = Mathf.RoundToInt(damage * criticalHitMultiplier);
             }
 
-            // Fire sniper projectile
-            if (_projectilePrefab != null && _firingPoint != null)
+            if (projectilePrefab != null && firingPoint != null)
             {
-                GameObject projectileObj = Instantiate(_projectilePrefab, _firingPoint.position, _firingPoint.rotation);
+                GameObject projectileObj = Instantiate(projectilePrefab, firingPoint.position, firingPoint.rotation);
                 Projectile projectile = projectileObj.GetComponent<Projectile>();
 
                 if (projectile != null)
                 {
-                    projectile.Initialize(_currentTarget, damage);
+                    projectile.Initialize(currentTarget, damage);
                 }
             }
 
-            // Notify listeners
-            OnTowerFired?.Invoke(this, _currentTarget);
+            OnTowerFired?.Invoke(this, currentTarget);
         }
+        #endregion
     }
 }
