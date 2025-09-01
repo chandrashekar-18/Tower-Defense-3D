@@ -31,10 +31,10 @@ namespace TowerDefense.Core
         #endregion
 
         #region Variables
-        [SerializeField] private GameState currentGameState = GameState.MainMenu;
-        [SerializeField] private int currentLevel = 0;
-        [SerializeField] private int playerLives = 20;
-        [SerializeField] private bool isPaused = false;
+        private GameState currentGameState = GameState.MainMenu;
+        private int currentLevel = 0;
+        private int playerLives = 20;
+        private bool isPaused = false;
         #endregion
 
         #region Properties
@@ -61,8 +61,6 @@ namespace TowerDefense.Core
         #region Game Flow Methods
         private void InitializeGame()
         {
-            // Initialize subsystems
-
             ChangeGameState(GameState.MainMenu);
         }
 
@@ -75,7 +73,6 @@ namespace TowerDefense.Core
             OnLevelChanged?.Invoke(currentLevel);
             OnPlayerLivesChanged?.Invoke(playerLives);
 
-            // Start the level
             LevelManager.Instance.LoadLevel(currentLevel);
         }
 
@@ -127,7 +124,7 @@ namespace TowerDefense.Core
 
             if (currentLevel > LevelManager.Instance.MaxLevel)
             {
-                GameOver(true); // Victory
+                GameOver(true);
                 return;
             }
 

@@ -11,7 +11,7 @@ namespace TowerDefense.Towers
     public class TowerController : MonoBehaviour
     {
         #region Variables
-        [SerializeField] private Camera mainCamera;
+        [SerializeField] private UnityEngine.Camera mainCamera;
         [SerializeField] private LayerMask gridLayerMask;
         [SerializeField] private TowerFactory towerFactory;
         [SerializeField] private string selectedTowerID = "basic"; // Use string ID instead
@@ -44,7 +44,7 @@ namespace TowerDefense.Towers
         {
             if (mainCamera == null)
             {
-                mainCamera = Camera.main;
+                mainCamera = UnityEngine.Camera.main;
             }
 
             if (towerFactory == null)

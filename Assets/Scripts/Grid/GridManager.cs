@@ -29,11 +29,11 @@ namespace TowerDefense.Grid
         [SerializeField] private GameObject pathCellPrefab;
         [SerializeField] private GameObject spawnPointPrefab;
         [SerializeField] private GameObject exitPointPrefab;
+        [SerializeField] private GameObject obstaclePrefab;
         [SerializeField] private Transform gridContainer;
-        [SerializeField] private int gridWidth = 15;
-        [SerializeField] private int gridHeight = 10;
         [SerializeField] private float cellSize = 1f;
-
+        private int gridWidth = 15;
+        private int gridHeight = 10;
         private GridCell[,] grid;
         private List<Transform> spawnPoints = new List<Transform>();
         private List<Transform> exitPoints = new List<Transform>();
@@ -95,6 +95,9 @@ namespace TowerDefense.Grid
                             break;
                         case CellType.ExitPoint:
                             cellPrefab = exitPointPrefab;
+                            break;
+                        case CellType.Obstacle:
+                            cellPrefab = obstaclePrefab;
                             break;
                     }
 

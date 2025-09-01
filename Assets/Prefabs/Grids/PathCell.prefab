@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6c87be1bf23c4254e8e47b990747d7ae, type: 2}
+  - {fileID: 2100000, guid: 1cfc2d24a8c23ba46b1e38e003126f4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -123,6 +123,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   x: 0
   z: 0
-  cellType: 0
+  cellType: 1
   worldPosition: {x: 0, y: 0, z: 0}
   tower: {fileID: 0}

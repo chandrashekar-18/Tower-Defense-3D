@@ -40,7 +40,7 @@ namespace TowerDefense.Grid
             this.cellType = cellType;
             this.worldPosition = worldPosition;
 
-            UpdateVisuals();
+            // UpdateVisuals();
         }
 
         public void SetTower(GameObject tower)
@@ -69,30 +69,30 @@ namespace TowerDefense.Grid
             }
         }
 
-        public void UpdateVisuals()
-        {
-            if (cellRenderer != null)
-            {
-                switch (cellType)
-                {
-                    case CellType.Empty:
-                        cellRenderer.material.color = new Color(0.8f, 0.8f, 0.8f);
-                        break;
-                    case CellType.Path:
-                        cellRenderer.material.color = new Color(0.6f, 0.4f, 0.2f);
-                        break;
-                    case CellType.SpawnPoint:
-                        cellRenderer.material.color = Color.green;
-                        break;
-                    case CellType.ExitPoint:
-                        cellRenderer.material.color = Color.red;
-                        break;
-                    case CellType.Obstacle:
-                        cellRenderer.material.color = new Color(0.3f, 0.3f, 0.3f);
-                        break;
-                }
-            }
-        }
+        // public void UpdateVisuals()
+        // {
+        //     if (cellRenderer != null)
+        //     {
+        //         switch (cellType)
+        //         {
+        //             case CellType.Empty:
+        //                 cellRenderer.material.color = new Color(0.8f, 0.8f, 0.8f);
+        //                 break;
+        //             case CellType.Path:
+        //                 cellRenderer.material.color = new Color(0.6f, 0.4f, 0.2f);
+        //                 break;
+        //             case CellType.SpawnPoint:
+        //                 cellRenderer.material.color = Color.green;
+        //                 break;
+        //             case CellType.ExitPoint:
+        //                 cellRenderer.material.color = Color.red;
+        //                 break;
+        //             case CellType.Obstacle:
+        //                 cellRenderer.material.color = new Color(0.3f, 0.3f, 0.3f);
+        //                 break;
+        //         }
+        //     }
+        // }
         #endregion
     }
 }

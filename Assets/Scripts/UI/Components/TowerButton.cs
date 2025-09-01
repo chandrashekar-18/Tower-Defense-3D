@@ -17,7 +17,7 @@ namespace TowerDefense.UI.Components
         [SerializeField] private TextMeshProUGUI towerNameText;
         [SerializeField] private TextMeshProUGUI towerCostText;
         [SerializeField] private Button button;
-        [SerializeField] private Image selectionIndicator;
+        [SerializeField] private GameObject selectionIndicator;
 
         private TowerData towerData;
         #endregion
@@ -72,7 +72,7 @@ namespace TowerDefense.UI.Components
         {
             if (selectionIndicator != null)
             {
-                selectionIndicator.enabled = isSelected;
+                selectionIndicator.SetActive(isSelected);
             }
         }
         #endregion

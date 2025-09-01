@@ -29,8 +29,8 @@ namespace TowerDefense.Level
         #endregion
 
         #region Variables
-        [SerializeField] private List<LevelData> levels = new List<LevelData>();
-        [SerializeField] private LevelData currentLevelData;
+        private List<LevelData> levels = new List<LevelData>();
+        private LevelData currentLevelData;
         #endregion
 
         #region Properties
@@ -76,7 +76,7 @@ namespace TowerDefense.Level
         {
             yield return new WaitForEndOfFrame();
 
-            
+
         }
         #endregion
     }

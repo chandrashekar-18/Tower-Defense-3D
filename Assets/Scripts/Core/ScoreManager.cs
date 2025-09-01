@@ -40,6 +40,7 @@ namespace TowerDefense.Core
             WaveManager.OnEnemyDefeated += HandleEnemyDefeated;
             WaveManager.OnWaveCompleted += HandleWaveCompleted;
             GameManager.OnGameStateChanged += HandleGameStateChanged;
+            ResetScore();
         }
 
         private void OnDestroy()

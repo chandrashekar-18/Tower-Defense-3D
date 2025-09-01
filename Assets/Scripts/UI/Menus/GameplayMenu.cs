@@ -37,6 +37,7 @@ namespace TowerDefense.UI.Menus
         void Start()
         {
             PopulateTowerButtons();
+            UpdateScoreDisplay(ScoreManager.Instance.CurrentScore);
         }
         
         public override void Open()
@@ -69,7 +70,7 @@ namespace TowerDefense.UI.Menus
         #region Callbacks
         private void UpdateCurrencyDisplay(int newAmount)
         {
-            currencyText.text = $"$ {newAmount}";
+            currencyText.text = $"Currency : ${newAmount}";
         }
 
         private void UpdateLivesDisplay(int newLives)
