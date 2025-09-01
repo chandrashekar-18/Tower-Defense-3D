@@ -14,17 +14,6 @@ namespace TowerDefense.Core
     {
         #region Singleton
         public static WaveManager Instance { get; private set; }
-
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-        }
         #endregion
 
         #region Variables
@@ -66,6 +55,17 @@ namespace TowerDefense.Core
         #endregion
 
         #region Unity Lifecycle
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+        }
+
         private void Start()
         {
             InitializeWaves(LevelManager.Instance.CurrentLevelData);

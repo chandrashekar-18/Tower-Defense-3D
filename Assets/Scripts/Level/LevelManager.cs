@@ -12,20 +12,6 @@ namespace TowerDefense.Level
     {
         #region Singleton
         public static LevelManager Instance { get; private set; }
-
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-
-            LoadLevelData();
-        }
         #endregion
 
         #region Variables
@@ -44,6 +30,22 @@ namespace TowerDefense.Level
         public event LevelLoadedDelegate OnLevelLoaded;
         #endregion
 
+        #region Unity Lifecycle
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            LoadLevelData();
+        }
+        #endregion
+
         #region Public Methods
         public void LoadLevel(int levelIndex)
         {
@@ -56,7 +58,6 @@ namespace TowerDefense.Level
             currentLevelData.DebugPrintGrid();
             OnLevelLoaded?.Invoke(currentLevelData);
             SceneLoader.Instance.LoadScene(GameConstants.GameplayScene);
-            // StartCoroutine(LoadLevelRoutine(levelIndex));
         }
         #endregion
 
@@ -70,13 +71,6 @@ namespace TowerDefense.Level
             {
                 levels.AddRange(resourceLevels);
             }
-        }
-
-        private IEnumerator LoadLevelRoutine(int levelIndex)
-        {
-            yield return new WaitForEndOfFrame();
-
-
         }
         #endregion
     }

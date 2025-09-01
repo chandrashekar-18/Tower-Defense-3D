@@ -37,6 +37,7 @@ namespace TowerDefense.Core
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
+        
         private void Start()
         {
             Initialize();

@@ -38,6 +38,9 @@ namespace TowerDefense.UI.Menus
         {
             PopulateTowerButtons();
             UpdateScoreDisplay(ScoreManager.Instance.CurrentScore);
+            UpdateLevelDisplay(GameManager.Instance.CurrentLevel);
+            UpdateLivesDisplay(GameManager.Instance.PlayerLives);
+            UpdateWaveDisplay(WaveManager.Instance.CurrentWaveIndex, WaveManager.Instance.CurrentWave);
         }
         
         public override void Open()
@@ -48,7 +51,7 @@ namespace TowerDefense.UI.Menus
             GameManager.OnPlayerLivesChanged += UpdateLivesDisplay;
             GameManager.OnLevelChanged += UpdateLevelDisplay;
             ScoreManager.OnScoreChanged += UpdateScoreDisplay;
-            WaveManager.OnWaveStarted += HandleWaveStarted;
+            WaveManager.OnWaveStarted += UpdateWaveDisplay;
             WaveManager.OnTimeBetweenWavesChanged += UpdateNextWaveTimer;
             pauseBtn.onClick.AddListener(OnPauseBtnClicked);
         }
@@ -61,7 +64,7 @@ namespace TowerDefense.UI.Menus
             GameManager.OnPlayerLivesChanged -= UpdateLivesDisplay;
             GameManager.OnLevelChanged -= UpdateLevelDisplay;
             ScoreManager.OnScoreChanged -= UpdateScoreDisplay;
-            WaveManager.OnWaveStarted -= HandleWaveStarted;
+            WaveManager.OnWaveStarted -= UpdateWaveDisplay;
             WaveManager.OnTimeBetweenWavesChanged -= UpdateNextWaveTimer;
             pauseBtn.onClick.RemoveListener(OnPauseBtnClicked);
         }
@@ -88,7 +91,7 @@ namespace TowerDefense.UI.Menus
             scoreText.text = $"Score: {newScore}";
         }
 
-        private void HandleWaveStarted(int waveIndex, WaveData waveData)
+        private void UpdateWaveDisplay(int waveIndex, WaveData waveData)
         {
             waveText.text = $"Wave: {waveIndex + 1}/{WaveManager.Instance.TotalWaves}";
             nextWaveTimerPanel.SetActive(false);

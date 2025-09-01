@@ -11,17 +11,6 @@ namespace TowerDefense.Grid
     {
         #region Singleton
         public static GridManager Instance { get; private set; }
-
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-        }
         #endregion
 
         #region Variables
@@ -30,8 +19,8 @@ namespace TowerDefense.Grid
         [SerializeField] private GameObject spawnPointPrefab;
         [SerializeField] private GameObject exitPointPrefab;
         [SerializeField] private GameObject obstaclePrefab;
-        [SerializeField] private Transform gridContainer;
         [SerializeField] private float cellSize = 1f;
+        private Transform gridContainer;
         private int gridWidth = 15;
         private int gridHeight = 10;
         private GridCell[,] grid;
@@ -52,6 +41,16 @@ namespace TowerDefense.Grid
         #endregion
 
         #region Unity Lifecycle
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+        }
         private void Start()
         {
             GenerateGrid(LevelManager.Instance.CurrentLevelData);

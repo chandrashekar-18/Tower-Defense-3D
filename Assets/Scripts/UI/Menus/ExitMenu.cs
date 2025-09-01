@@ -36,7 +36,7 @@ namespace TowerDefense.UI.Menus
         #region Callbacks
         private void OnYesButtonClicked()
         {
-            SceneLoader.Instance.LoadScene(GameConstants.MainMenuScene);
+            GameManager.Instance.ReturnToMainMenu();
         }
 
         private void OnNoButtonClicked()

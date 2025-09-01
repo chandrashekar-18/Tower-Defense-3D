@@ -11,23 +11,6 @@ namespace TowerDefense.Core
     {
         #region Singleton
         public static GameManager Instance { get; private set; }
-
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-
-        private void Start()
-        {
-            InitializeGame();
-        }
         #endregion
 
         #region Variables
@@ -56,6 +39,25 @@ namespace TowerDefense.Core
 
         public delegate void LevelChangedDelegate(int newLevel);
         public static event LevelChangedDelegate OnLevelChanged;
+        #endregion
+
+        #region Unity Lifecycle
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+
+        private void Start()
+        {
+            InitializeGame();
+        }
         #endregion
 
         #region Game Flow Methods

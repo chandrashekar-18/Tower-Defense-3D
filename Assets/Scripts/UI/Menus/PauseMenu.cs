@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TowerDefense.Core;
+using TowerDefense.UI.Handlers;
 
 namespace TowerDefense.UI.Menus
 {
@@ -48,7 +49,7 @@ namespace TowerDefense.UI.Menus
 
         private void OnQuitBtnClicked()
         {
-            GameManager.Instance.ReturnToMainMenu();
+            GameplayUIHandler.Instance.OpenMenu(Enums.MenuType.ExitMenu);
         }
         #endregion
     }
