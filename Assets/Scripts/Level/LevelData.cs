@@ -29,24 +29,59 @@ namespace TowerDefense.Level
         #endregion
 
         #region Public Methods
-        public void InitializeDefaultValues()
+public void InitializeDefaultValues()
+{
+    levelName = $"Level {levelNumber}";
+    
+    // Don't reset grid dimensions if they're already set
+    if (gridData == null)
+    {
+        gridWidth = 15;
+        gridHeight = 10;
+    }
+    
+    startingCurrency = 300;
+
+    // Create new grid with current dimensions
+    CellTypeData[,] newGrid = new CellTypeData[gridWidth, gridHeight];
+
+    // Initialize all cells as empty
+    for (int x = 0; x < gridWidth; x++)
+    {
+        for (int z = 0; z < gridHeight; z++)
         {
-            levelName = $"Level {levelNumber}";
-            gridWidth = 15;
-            gridHeight = 10;
-            startingCurrency = 300;
+            newGrid[x, z] = new CellTypeData { CellType = Grid.CellType.Empty };
+        }
+    }
 
-            gridData = new CellTypeData[gridWidth, gridHeight];
+    gridData = newGrid;
+}
 
-            for (int x = 0; x < gridWidth; x++)
+        // Add this new method for resizing the grid
+        public void ResizeGrid(int newWidth, int newHeight)
+        {
+            CellTypeData[,] newGrid = new CellTypeData[newWidth, newHeight];
+
+            // Copy existing data where possible
+            for (int x = 0; x < newWidth; x++)
             {
-                for (int z = 0; z < gridHeight; z++)
+                for (int z = 0; z < newHeight; z++)
                 {
-                    gridData[x, z] = new CellTypeData { CellType = Grid.CellType.Empty };
+                    if (x < gridWidth && z < gridHeight && gridData != null)
+                    {
+                        newGrid[x, z] = gridData[x, z];
+                    }
+                    else
+                    {
+                        newGrid[x, z] = new CellTypeData { CellType = Grid.CellType.Empty };
+                    }
                 }
             }
-        }
 
+            gridWidth = newWidth;
+            gridHeight = newHeight;
+            gridData = newGrid;
+        }
         public Grid.CellType GetCellType(int x, int z)
         {
             if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight || gridData == null)
