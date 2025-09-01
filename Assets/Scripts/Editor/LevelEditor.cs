@@ -106,23 +106,15 @@ namespace TowerDefense.Editor
             if (enemyDataLoaded) return;
 
             // Load all EnemyData ScriptableObjects from Resources
-            Object[] enemyAssets = Resources.LoadAll("", typeof(ScriptableObject));
+            Object[] enemyAssets = Resources.LoadAll<TowerDefense.Enemies.EnemyData>("Enemies");
             List<string> enemyIds = new List<string>();
 
-            foreach (Object asset in enemyAssets)
+            foreach (TowerDefense.Enemies.EnemyData enemyData in enemyAssets)
             {
-                // Assuming your EnemyData has a name or id property
-                // Adjust this based on your actual EnemyData structure
-                if (asset.GetType().Name.Contains("EnemyData") || asset.name.Contains("Enemy"))
+                if (!string.IsNullOrEmpty(enemyData.EnemyId))
                 {
-                    enemyIds.Add(asset.name);
+                    enemyIds.Add(enemyData.EnemyId);
                 }
-            }
-
-            // If no enemy data found, use default enemy types
-            if (enemyIds.Count == 0)
-            {
-                enemyIds.AddRange(new string[] { "BasicEnemy", "FastEnemy", "TankEnemy", "FlyingEnemy", "BossEnemy" });
             }
 
             availableEnemyIds = enemyIds.ToArray();
@@ -237,8 +229,14 @@ namespace TowerDefense.Editor
             string json = currentLevel.ToJson();
             File.WriteAllText(path, json);
 
+            // Get filename without extension and path
+            string fileName = Path.GetFileNameWithoutExtension(path);
+
+            // Update the ScriptableObject name to match the file name
+            currentLevel.name = fileName;
+
             // Find existing asset path by name
-            string[] guids = AssetDatabase.FindAssets(currentLevel.name + " t:LevelData");
+            string[] guids = AssetDatabase.FindAssets(fileName + " t:LevelData");
             string existingAssetPath = null;
 
             if (guids.Length > 0)
@@ -249,7 +247,7 @@ namespace TowerDefense.Editor
             // If no existing asset found, create new path
             if (string.IsNullOrEmpty(existingAssetPath))
             {
-                existingAssetPath = "Assets/Resources/Levels/" + currentLevel.name + ".asset";
+                existingAssetPath = "Assets/Resources/Levels/" + fileName + ".asset";
                 Directory.CreateDirectory(Path.GetDirectoryName(existingAssetPath));
                 AssetDatabase.CreateAsset(currentLevel, existingAssetPath);
             }
@@ -258,6 +256,9 @@ namespace TowerDefense.Editor
                 // Update existing ScriptableObject
                 LevelData existingLevel = AssetDatabase.LoadAssetAtPath<LevelData>(existingAssetPath);
                 EditorUtility.CopySerialized(currentLevel, existingLevel);
+
+                // Update the existing asset's name
+                existingLevel.name = fileName;
             }
 
             AssetDatabase.SaveAssets();

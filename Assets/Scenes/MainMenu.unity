@@ -549,7 +549,6 @@ GameObject:
   m_Component:
   - component: {fileID: 184487309}
   - component: {fileID: 184487308}
-  - component: {fileID: 184487312}
   - component: {fileID: 184487311}
   m_Layer: 0
   m_Name: Core
@@ -603,19 +602,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levels: []
   currentLevelData: {fileID: 0}
---- !u!114 &184487312
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 184487307}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9646602e7e1c45e40843c23970ce2483, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currency: 100
 --- !u!1 &194590530
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using TowerDefense.Level;
 using UnityEngine;
 
 namespace TowerDefense.Core
@@ -5,11 +6,26 @@ namespace TowerDefense.Core
     /// <summary>
     /// Manages player resources like currency.
     /// </summary>
-    public class ResourceManager : MonoBehaviour
+    public class CurrencyManager : MonoBehaviour
     {
         #region Singleton
-        public static ResourceManager Instance { get; private set; }
+        public static CurrencyManager Instance { get; private set; }
+        #endregion
 
+        #region Variables
+        private int currency;
+        #endregion
+
+        #region Properties
+        public int Currency => currency;
+        #endregion
+        
+        #region Events
+        public delegate void CurrencyChangedDelegate(int newAmount);
+        public static event CurrencyChangedDelegate OnCurrencyChanged;
+        #endregion
+
+        #region Unity Lifecycle
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -21,22 +37,16 @@ namespace TowerDefense.Core
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        #endregion
-
-        #region Variables
-        [SerializeField] private int currency = 0;
-        public int Currency => currency;
-        #endregion
-
-        #region Events
-        public delegate void CurrencyChangedDelegate(int newAmount);
-        public static event CurrencyChangedDelegate OnCurrencyChanged;
+        private void Start()
+        {
+            Initialize();
+        }
         #endregion
 
         #region Public Methods
         public void Initialize()
         {
-            currency = 300; // Starting currency
+            currency = LevelManager.Instance.CurrentLevelData.StartingCurrency;
             OnCurrencyChanged?.Invoke(currency);
         }
 

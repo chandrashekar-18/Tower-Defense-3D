@@ -16,57 +16,259 @@ MonoBehaviour:
   levelName: Level 3
   gridWidth: 16
   gridHeight: 12
+  serializedGrid:
+    cells:
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 4
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 3
+    - CellType: 4
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 2
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 4
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 4
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    width: 16
+    height: 12
   waves:
   - enemyGroups:
-    - enemyId: BasicEnemy
-      count: 7
-      spawnDelay: 1.6177447
-    - enemyId: BasicEnemy
-      count: 6
-      spawnDelay: 1.2512014
-    - enemyId: BasicEnemy
+    - enemyId: tower_attacker
       count: 5
-      spawnDelay: 1.2364745
-    delayBetweenGroups: 4.31042
-  - enemyGroups:
-    - enemyId: FastEnemy
-      count: 4
-      spawnDelay: 1.2278707
-    - enemyId: FastEnemy
+      spawnDelay: 1.1817818
+    - enemyId: fast_enemy
+      count: 7
+      spawnDelay: 1.5770059
+    - enemyId: basic_enemy
       count: 6
-      spawnDelay: 1.8435427
-    delayBetweenGroups: 2.1498296
+      spawnDelay: 1.9135205
+    - enemyId: fast_enemy
+      count: 6
+      spawnDelay: 1.9446329
+    delayBetweenGroups: 2.3143349
   - enemyGroups:
-    - enemyId: TankEnemy
+    - enemyId: basic_enemy
       count: 3
-      spawnDelay: 1.7734536
-    - enemyId: TankEnemy
+      spawnDelay: 1.3704472
+    - enemyId: basic_enemy
       count: 6
-      spawnDelay: 1.5771427
-    - enemyId: FastEnemy
-      count: 7
-      spawnDelay: 1.8459476
-    delayBetweenGroups: 3.5999126
+      spawnDelay: 1.9769231
+    delayBetweenGroups: 4.9183764
   - enemyGroups:
-    - enemyId: FastEnemy
-      count: 5
-      spawnDelay: 1.6979731
-    - enemyId: FastEnemy
-      count: 5
-      spawnDelay: 1.2723498
-    - enemyId: TankEnemy
+    - enemyId: tower_attacker
+      count: 6
+      spawnDelay: 1.0645487
+    - enemyId: fast_enemy
       count: 3
-      spawnDelay: 1.5940421
-    - enemyId: TankEnemy
-      count: 4
-      spawnDelay: 1.9716208
-    delayBetweenGroups: 3.3666282
+      spawnDelay: 1.550097
+    - enemyId: fast_enemy
+      count: 3
+      spawnDelay: 1.3100703
+    - enemyId: tower_attacker
+      count: 6
+      spawnDelay: 1.1241839
+    delayBetweenGroups: 2.2329607
   - enemyGroups:
-    - enemyId: FastEnemy
-      count: 4
-      spawnDelay: 1.629414
-    - enemyId: TankEnemy
+    - enemyId: tower_attacker
       count: 7
-      spawnDelay: 1.9639485
-    delayBetweenGroups: 3.1893
+      spawnDelay: 1.5585287
+    - enemyId: fast_enemy
+      count: 5
+      spawnDelay: 1.7182246
+    delayBetweenGroups: 4.174369
+  - enemyGroups:
+    - enemyId: basic_enemy
+      count: 7
+      spawnDelay: 1.2840595
+    - enemyId: fast_enemy
+      count: 5
+      spawnDelay: 1.294702
+    - enemyId: tower_attacker
+      count: 5
+      spawnDelay: 1.0192904
+    - enemyId: fast_enemy
+      count: 7
+      spawnDelay: 1.4977336
+    delayBetweenGroups: 2.4664755
   startingCurrency: 300

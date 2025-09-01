@@ -63,11 +63,9 @@ namespace TowerDefense.Grid
         {
             ClearGrid();
 
-            // Set grid dimensions from level data
             gridWidth = levelData.GridWidth;
             gridHeight = levelData.GridHeight;
 
-            // Create grid container if needed
             if (gridContainer == null)
             {
                 GameObject container = new GameObject("GridContainer");
@@ -75,7 +73,6 @@ namespace TowerDefense.Grid
                 gridContainer.position = Vector3.zero;
             }
 
-            // Create grid cells
             grid = new GridCell[gridWidth, gridHeight];
 
             for (int x = 0; x < gridWidth; x++)
@@ -84,11 +81,9 @@ namespace TowerDefense.Grid
                 {
                     Vector3 position = new Vector3(x * cellSize, 0, z * cellSize);
 
-                    // Determine cell type from level data
                     CellType cellType = levelData.GetCellType(x, z);
 
-                    // Create appropriate cell
-                    GameObject cellPrefab = gridCellPrefab; // Default
+                    GameObject cellPrefab = gridCellPrefab;
 
                     switch (cellType)
                     {
@@ -115,7 +110,6 @@ namespace TowerDefense.Grid
                     cell.Initialize(x, z, cellType, position);
                     grid[x, z] = cell;
 
-                    // Track spawn and exit points
                     if (cellType == CellType.SpawnPoint)
                     {
                         spawnPoints.Add(cellObject.transform);
@@ -127,10 +121,8 @@ namespace TowerDefense.Grid
                 }
             }
 
-            // Calculate paths from spawn points
             CalculatePathsFromSpawnPoints();
 
-            // Notify subscribers
             OnGridGenerated?.Invoke(grid);
         }
 
@@ -158,7 +150,7 @@ namespace TowerDefense.Grid
                 return false;
 
             Vector3 position = grid[x, z].transform.position;
-            position.y += cellSize / 2; // Adjust height
+            position.y += cellSize / 2;
 
             tower.transform.position = position;
             grid[x, z].SetTower(tower);
@@ -231,7 +223,6 @@ namespace TowerDefense.Grid
         #region Private Methods
         private void ClearGrid()
         {
-            // Clear existing grid
             if (grid != null)
             {
                 for (int x = 0; x < grid.GetLength(0); x++)
@@ -246,12 +237,10 @@ namespace TowerDefense.Grid
                 }
             }
 
-            // Clear lists
             spawnPoints.Clear();
             exitPoints.Clear();
             pathsFromSpawns.Clear();
 
-            // Clear container
             if (gridContainer != null)
             {
                 foreach (Transform child in gridContainer)
@@ -265,7 +254,6 @@ namespace TowerDefense.Grid
         {
             foreach (Transform spawnPoint in spawnPoints)
             {
-                // Find closest exit point and calculate path
                 Transform closestExit = FindClosestExitPoint(spawnPoint.position);
                 if (closestExit != null)
                 {
@@ -304,20 +292,16 @@ namespace TowerDefense.Grid
         {
             // Simple A* implementation could go here
             // For simplicity, we'll use a basic approach
-
             List<Vector3> path = new List<Vector3>();
 
-            // Start with spawn point
             path.Add(GetWorldPosition(start.x, start.y) + Vector3.up * 0.1f);
 
-            // Find all path cells and add them in sequence
             List<Vector2Int> pathCells = FindPathCells(start, end);
             foreach (Vector2Int cell in pathCells)
             {
                 path.Add(GetWorldPosition(cell.x, cell.y) + Vector3.up * 0.1f);
             }
 
-            // Add end point
             path.Add(GetWorldPosition(end.x, end.y) + Vector3.up * 0.1f);
 
             return path;
@@ -325,7 +309,6 @@ namespace TowerDefense.Grid
 
         private List<Vector2Int> FindPathCells(Vector2Int start, Vector2Int end)
         {
-            // Find all cells of type Path between start and end
             List<Vector2Int> pathCells = new List<Vector2Int>();
 
             // For simplicity, just find all path cells and sort by distance to start
@@ -340,10 +323,7 @@ namespace TowerDefense.Grid
                 }
             }
 
-            // Sort by distance to start
-            pathCells.Sort((a, b) =>
-                Vector2Int.Distance(a, start).CompareTo(Vector2Int.Distance(b, start))
-            );
+            pathCells.Sort((a, b) => Vector2Int.Distance(a, start).CompareTo(Vector2Int.Distance(b, start)));
 
             return pathCells;
         }

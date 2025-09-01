@@ -33,42 +33,42 @@
         0,
         0,
         0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
         4,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        0,
         0,
         0,
         0,
         3,
-        0,
+        4,
         0,
         0,
         0,
@@ -77,7 +77,7 @@
         0,
         0,
         0,
-        4,
+        0,
         1,
         0,
         0,
@@ -115,44 +115,7 @@
         1,
         1,
         1,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
         4,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        4,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
         0,
         0,
         0,
@@ -183,7 +146,44 @@
         0,
         0,
         0,
-        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
         0,
         0,
         0,
@@ -201,97 +201,107 @@
         {
             "enemyGroups": [
                 {
-                    "enemyId": "BasicEnemy",
-                    "count": 7,
-                    "spawnDelay": 1.6177446842193604
-                },
-                {
-                    "enemyId": "BasicEnemy",
-                    "count": 6,
-                    "spawnDelay": 1.2512013912200928
-                },
-                {
-                    "enemyId": "BasicEnemy",
+                    "enemyId": "tower_attacker",
                     "count": 5,
-                    "spawnDelay": 1.2364745140075684
-                }
-            ],
-            "delayBetweenGroups": 4.310420036315918
-        },
-        {
-            "enemyGroups": [
-                {
-                    "enemyId": "FastEnemy",
-                    "count": 4,
-                    "spawnDelay": 1.2278707027435303
+                    "spawnDelay": 1.1817817687988282
                 },
                 {
-                    "enemyId": "FastEnemy",
+                    "enemyId": "fast_enemy",
+                    "count": 7,
+                    "spawnDelay": 1.5770058631896973
+                },
+                {
+                    "enemyId": "basic_enemy",
                     "count": 6,
-                    "spawnDelay": 1.8435426950454713
+                    "spawnDelay": 1.9135204553604127
+                },
+                {
+                    "enemyId": "fast_enemy",
+                    "count": 6,
+                    "spawnDelay": 1.944632887840271
                 }
             ],
-            "delayBetweenGroups": 2.149829626083374
+            "delayBetweenGroups": 2.3143348693847658
         },
         {
             "enemyGroups": [
                 {
-                    "enemyId": "TankEnemy",
+                    "enemyId": "basic_enemy",
                     "count": 3,
-                    "spawnDelay": 1.7734535932540894
+                    "spawnDelay": 1.3704471588134766
                 },
                 {
-                    "enemyId": "TankEnemy",
+                    "enemyId": "basic_enemy",
                     "count": 6,
-                    "spawnDelay": 1.5771427154541016
-                },
-                {
-                    "enemyId": "FastEnemy",
-                    "count": 7,
-                    "spawnDelay": 1.8459476232528687
+                    "spawnDelay": 1.9769231081008912
                 }
             ],
-            "delayBetweenGroups": 3.599912643432617
+            "delayBetweenGroups": 4.918376445770264
         },
         {
             "enemyGroups": [
                 {
-                    "enemyId": "FastEnemy",
-                    "count": 5,
-                    "spawnDelay": 1.6979731321334839
+                    "enemyId": "tower_attacker",
+                    "count": 6,
+                    "spawnDelay": 1.0645487308502198
                 },
                 {
-                    "enemyId": "FastEnemy",
-                    "count": 5,
-                    "spawnDelay": 1.2723498344421387
-                },
-                {
-                    "enemyId": "TankEnemy",
+                    "enemyId": "fast_enemy",
                     "count": 3,
-                    "spawnDelay": 1.5940420627593995
+                    "spawnDelay": 1.5500969886779786
                 },
                 {
-                    "enemyId": "TankEnemy",
-                    "count": 4,
-                    "spawnDelay": 1.971620798110962
+                    "enemyId": "fast_enemy",
+                    "count": 3,
+                    "spawnDelay": 1.310070276260376
+                },
+                {
+                    "enemyId": "tower_attacker",
+                    "count": 6,
+                    "spawnDelay": 1.1241838932037354
                 }
             ],
-            "delayBetweenGroups": 3.3666281700134279
+            "delayBetweenGroups": 2.2329607009887697
         },
         {
             "enemyGroups": [
                 {
-                    "enemyId": "FastEnemy",
-                    "count": 4,
-                    "spawnDelay": 1.6294139623641968
+                    "enemyId": "tower_attacker",
+                    "count": 7,
+                    "spawnDelay": 1.5585286617279053
                 },
                 {
-                    "enemyId": "TankEnemy",
-                    "count": 7,
-                    "spawnDelay": 1.9639484882354737
+                    "enemyId": "fast_enemy",
+                    "count": 5,
+                    "spawnDelay": 1.7182246446609498
                 }
             ],
-            "delayBetweenGroups": 3.189300060272217
+            "delayBetweenGroups": 4.174368858337402
+        },
+        {
+            "enemyGroups": [
+                {
+                    "enemyId": "basic_enemy",
+                    "count": 7,
+                    "spawnDelay": 1.2840595245361329
+                },
+                {
+                    "enemyId": "fast_enemy",
+                    "count": 5,
+                    "spawnDelay": 1.2947020530700684
+                },
+                {
+                    "enemyId": "tower_attacker",
+                    "count": 5,
+                    "spawnDelay": 1.0192904472351075
+                },
+                {
+                    "enemyId": "fast_enemy",
+                    "count": 7,
+                    "spawnDelay": 1.4977335929870606
+                }
+            ],
+            "delayBetweenGroups": 2.466475486755371
         }
     ],
     "startingCurrency": 300

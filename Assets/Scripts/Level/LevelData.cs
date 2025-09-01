@@ -3,18 +3,25 @@ using System.Collections.Generic;
 
 namespace TowerDefense.Level
 {
-    /// <summary>
-    /// ScriptableObject for level data.
-    /// </summary>
     [CreateAssetMenu(fileName = "New Level", menuName = "Tower Defense/Level Data")]
     public class LevelData : ScriptableObject
     {
+        #region Serializable Classes
+        [System.Serializable]
+        private class SerializableGrid
+        {
+            public List<CellTypeData> cells = new List<CellTypeData>();
+            public int width;
+            public int height;
+        }
+        #endregion
+
         #region Variables
         [SerializeField] private int levelNumber;
         [SerializeField] private string levelName;
         [SerializeField] private int gridWidth = 15;
         [SerializeField] private int gridHeight = 10;
-        [SerializeField] private CellTypeData[,] gridData;
+        [SerializeField] private SerializableGrid serializedGrid = new SerializableGrid();
         [SerializeField] private List<WaveData> waves = new List<WaveData>();
         [SerializeField] private int startingCurrency = 300;
         #endregion
@@ -28,77 +35,103 @@ namespace TowerDefense.Level
         public int StartingCurrency { get => startingCurrency; set => startingCurrency = value; }
         #endregion
 
+        #region Unity Methods
+        private void OnValidate()
+        {
+            if (serializedGrid.cells.Count == 0)
+            {
+                InitializeDefaultValues();
+            }
+        }
+        #endregion
+
         #region Public Methods
         public void InitializeDefaultValues()
         {
             levelName = $"Level {levelNumber}";
-            
+
             // Don't reset grid dimensions if they're already set
-            if (gridData == null)
+            if (serializedGrid.cells.Count == 0)
             {
                 gridWidth = 15;
                 gridHeight = 10;
             }
-            
+
             startingCurrency = 300;
 
-            // Create new grid with current dimensions
-            CellTypeData[,] newGrid = new CellTypeData[gridWidth, gridHeight];
+            // Initialize the grid
+            serializedGrid.width = gridWidth;
+            serializedGrid.height = gridHeight;
+            serializedGrid.cells.Clear();
 
             // Initialize all cells as empty
-            for (int x = 0; x < gridWidth; x++)
+            for (int z = 0; z < gridHeight; z++)
             {
-                for (int z = 0; z < gridHeight; z++)
+                for (int x = 0; x < gridWidth; x++)
                 {
-                    newGrid[x, z] = new CellTypeData { CellType = Grid.CellType.Empty };
+                    serializedGrid.cells.Add(new CellTypeData { CellType = Grid.CellType.Empty });
                 }
             }
-
-            gridData = newGrid;
         }
 
-        // Add this new method for resizing the grid
         public void ResizeGrid(int newWidth, int newHeight)
         {
-            CellTypeData[,] newGrid = new CellTypeData[newWidth, newHeight];
+            List<CellTypeData> newCells = new List<CellTypeData>();
 
             // Copy existing data where possible
-            for (int x = 0; x < newWidth; x++)
+            for (int z = 0; z < newHeight; z++)
             {
-                for (int z = 0; z < newHeight; z++)
+                for (int x = 0; x < newWidth; x++)
                 {
-                    if (x < gridWidth && z < gridHeight && gridData != null)
+                    if (x < gridWidth && z < gridHeight && serializedGrid.cells.Count > 0)
                     {
-                        newGrid[x, z] = gridData[x, z];
+                        newCells.Add(serializedGrid.cells[x + z * gridWidth]);
                     }
                     else
                     {
-                        newGrid[x, z] = new CellTypeData { CellType = Grid.CellType.Empty };
+                        newCells.Add(new CellTypeData { CellType = Grid.CellType.Empty });
                     }
                 }
             }
 
             gridWidth = newWidth;
             gridHeight = newHeight;
-            gridData = newGrid;
+            serializedGrid.width = newWidth;
+            serializedGrid.height = newHeight;
+            serializedGrid.cells = newCells;
         }
-        
+
         public Grid.CellType GetCellType(int x, int z)
         {
-            if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight || gridData == null)
+            if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight ||
+                serializedGrid.cells.Count == 0)
                 return Grid.CellType.Empty;
 
-            return gridData[x, z].CellType;
+            return serializedGrid.cells[x + z * gridWidth].CellType;
         }
 
         public void SetCellType(int x, int z, Grid.CellType cellType)
         {
-            if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight || gridData == null)
+            if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight)
                 return;
 
-            gridData[x, z].CellType = cellType;
-        }
+            if (serializedGrid.cells.Count == 0)
+            {
+                Debug.LogWarning("Grid data was null, initializing...");
+                InitializeDefaultValues();
+            }
 
+            // Create a new CellTypeData instance
+            CellTypeData newCell = new CellTypeData { CellType = cellType };
+
+            // Replace the entire struct in the list
+            int index = x + z * gridWidth;
+            serializedGrid.cells[index] = newCell;
+
+#if UNITY_EDITOR
+            UnityEditor.EditorUtility.SetDirty(this);
+#endif
+        }
         public void AddWave(WaveData wave)
         {
             waves.Add(wave);
@@ -117,6 +150,21 @@ namespace TowerDefense.Level
             waves.Clear();
         }
 
+        public void DebugPrintGrid()
+        {
+            Debug.Log($"Grid dimensions: {gridWidth}x{gridHeight}");
+            string gridString = "Grid Contents:\n";
+            for (int z = 0; z < gridHeight; z++)
+            {
+                for (int x = 0; x < gridWidth; x++)
+                {
+                    gridString += $"{GetCellType(x, z)} ";
+                }
+                gridString += "\n";
+            }
+            Debug.Log(gridString);
+        }
+
         public string ToJson()
         {
             LevelDataSerializable serializable = new LevelDataSerializable(this);
@@ -131,18 +179,12 @@ namespace TowerDefense.Level
         #endregion
     }
 
-    /// <summary>
-    /// Serializable struct for cell type data.
-    /// </summary>
     [System.Serializable]
     public struct CellTypeData
     {
         public Grid.CellType CellType;
     }
 
-    /// <summary>
-    /// Serializable class for level data.
-    /// </summary>
     [System.Serializable]
     public class LevelDataSerializable
     {
@@ -183,25 +225,25 @@ namespace TowerDefense.Level
         public LevelData ToLevelData()
         {
             LevelData levelData = ScriptableObject.CreateInstance<LevelData>();
+            levelData.InitializeDefaultValues();
 
-            // Set basic properties using the public setters
             levelData.LevelNumber = levelNumber;
             levelData.LevelName = levelName;
             levelData.StartingCurrency = startingCurrency;
-
-            // Set the name property for the ScriptableObject
             levelData.name = levelName;
 
-            // Resize grid to match loaded dimensions
+            // Resize and restore grid data
             levelData.ResizeGrid(gridWidth, gridHeight);
 
-            // Restore grid data
-            for (int x = 0; x < gridWidth; x++)
+            if (gridDataFlattened != null && gridDataFlattened.Length == gridWidth * gridHeight)
             {
-                for (int z = 0; z < gridHeight; z++)
+                for (int x = 0; x < gridWidth; x++)
                 {
-                    Grid.CellType cellType = (Grid.CellType)gridDataFlattened[x + z * gridWidth];
-                    levelData.SetCellType(x, z, cellType);
+                    for (int z = 0; z < gridHeight; z++)
+                    {
+                        Grid.CellType cellType = (Grid.CellType)gridDataFlattened[x + z * gridWidth];
+                        levelData.SetCellType(x, z, cellType);
+                    }
                 }
             }
 

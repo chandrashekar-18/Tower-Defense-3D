@@ -17,23 +17,23 @@
         0,
         0,
         0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
         4,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
         0,
         0,
         0,
@@ -64,49 +64,49 @@
         0,
         0,
         0,
+        0,
+        0,
+        0,
+        0,
         4,
         0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
         4,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
         0,
         0,
         2,
@@ -116,7 +116,7 @@
         1,
         1,
         1,
-        1,
+        0,
         0,
         0,
         0,
@@ -159,72 +159,72 @@
         {
             "enemyGroups": [
                 {
-                    "enemyId": "BasicEnemy",
-                    "count": 7,
-                    "spawnDelay": 1.6528226137161255
-                },
-                {
-                    "enemyId": "BasicEnemy",
-                    "count": 7,
-                    "spawnDelay": 1.2817580699920655
-                },
-                {
-                    "enemyId": "FastEnemy",
-                    "count": 6,
-                    "spawnDelay": 1.4822964668273926
-                }
-            ],
-            "delayBetweenGroups": 3.4332427978515627
-        },
-        {
-            "enemyGroups": [
-                {
-                    "enemyId": "BasicEnemy",
+                    "enemyId": "fast_enemy",
                     "count": 4,
-                    "spawnDelay": 1.4164376258850098
+                    "spawnDelay": 1.084936261177063
                 },
                 {
-                    "enemyId": "FastEnemy",
-                    "count": 3,
-                    "spawnDelay": 1.2310041189193726
-                },
-                {
-                    "enemyId": "BasicEnemy",
-                    "count": 6,
-                    "spawnDelay": 1.486351728439331
+                    "enemyId": "basic_enemy",
+                    "count": 4,
+                    "spawnDelay": 1.0814131498336793
                 }
             ],
-            "delayBetweenGroups": 2.845902919769287
+            "delayBetweenGroups": 3.3311195373535158
         },
         {
             "enemyGroups": [
                 {
-                    "enemyId": "FastEnemy",
-                    "count": 6,
-                    "spawnDelay": 1.2913031578063965
+                    "enemyId": "fast_enemy",
+                    "count": 4,
+                    "spawnDelay": 1.932499885559082
                 },
                 {
-                    "enemyId": "BasicEnemy",
-                    "count": 6,
-                    "spawnDelay": 1.7646026611328126
-                }
-            ],
-            "delayBetweenGroups": 4.676115036010742
-        },
-        {
-            "enemyGroups": [
-                {
-                    "enemyId": "BasicEnemy",
-                    "count": 6,
-                    "spawnDelay": 1.3081095218658448
-                },
-                {
-                    "enemyId": "FastEnemy",
+                    "enemyId": "fast_enemy",
                     "count": 5,
-                    "spawnDelay": 1.888918399810791
+                    "spawnDelay": 1.6471271514892579
+                },
+                {
+                    "enemyId": "fast_enemy",
+                    "count": 3,
+                    "spawnDelay": 1.5452828407287598
                 }
             ],
-            "delayBetweenGroups": 3.9697887897491457
+            "delayBetweenGroups": 4.192333221435547
+        },
+        {
+            "enemyGroups": [
+                {
+                    "enemyId": "basic_enemy",
+                    "count": 7,
+                    "spawnDelay": 1.5014479160308838
+                },
+                {
+                    "enemyId": "fast_enemy",
+                    "count": 6,
+                    "spawnDelay": 1.8455653190612794
+                },
+                {
+                    "enemyId": "basic_enemy",
+                    "count": 6,
+                    "spawnDelay": 1.3258299827575684
+                }
+            ],
+            "delayBetweenGroups": 4.57761287689209
+        },
+        {
+            "enemyGroups": [
+                {
+                    "enemyId": "fast_enemy",
+                    "count": 7,
+                    "spawnDelay": 1.387497901916504
+                },
+                {
+                    "enemyId": "basic_enemy",
+                    "count": 7,
+                    "spawnDelay": 1.628836750984192
+                }
+            ],
+            "delayBetweenGroups": 3.39766263961792
         }
     ],
     "startingCurrency": 300

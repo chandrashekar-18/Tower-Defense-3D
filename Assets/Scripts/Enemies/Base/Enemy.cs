@@ -199,7 +199,7 @@ namespace TowerDefense.Enemies
         {
             isAlive = false;
 
-            ResourceManager.Instance.AddCurrency(enemyData.CurrencyReward);
+            CurrencyManager.Instance.AddCurrency(enemyData.CurrencyReward);
 
             OnEnemyDeath();
 

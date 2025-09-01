@@ -62,7 +62,6 @@ namespace TowerDefense.Core
         private void InitializeGame()
         {
             // Initialize subsystems
-            ResourceManager.Instance.Initialize();
 
             ChangeGameState(GameState.MainMenu);
         }
@@ -100,6 +99,7 @@ namespace TowerDefense.Core
 
         public void GameOver(bool victory = false)
         {
+            Debug.Log(victory ? "Victory!" : "Defeat!");
             ChangeGameState(GameState.GameOver);
         }
 

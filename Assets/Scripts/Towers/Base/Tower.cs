@@ -130,7 +130,7 @@ namespace TowerDefense.Towers
             if (!isDestroyed || !towerData.CanBeRepaired)
                 return false;
 
-            if (ResourceManager.Instance.SpendCurrency(towerData.RepairCost))
+            if (CurrencyManager.Instance.SpendCurrency(towerData.RepairCost))
             {
                 currentHealth = towerData.MaxHealth;
                 isDestroyed = false;

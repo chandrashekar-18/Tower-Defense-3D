@@ -28,13 +28,12 @@ namespace TowerDefense.Core
         #endregion
 
         #region Variables
+        [SerializeField] private EnemyFactory enemyFactory;
         [SerializeField] private List<WaveData> waves = new List<WaveData>();
         [SerializeField] private int currentWaveIndex = -1;
         [SerializeField] private int remainingEnemiesInWave = 0;
         [SerializeField] private bool isSpawning = false;
         [SerializeField] private float timeBetweenWaves = 5f;
-
-        private EnemyFactory enemyFactory;
         #endregion
 
         #region Properties
@@ -69,12 +68,6 @@ namespace TowerDefense.Core
         #region Unity Lifecycle
         private void Start()
         {
-            enemyFactory = GetComponent<EnemyFactory>();
-            if (enemyFactory == null)
-            {
-                enemyFactory = gameObject.AddComponent<EnemyFactory>();
-            }
-
             InitializeWaves(LevelManager.Instance.CurrentLevelData);
         }
         #endregion

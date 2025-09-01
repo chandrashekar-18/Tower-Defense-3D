@@ -102,7 +102,7 @@ namespace TowerDefense.Towers
                 return;
 
             // Check if player can afford the tower
-            if (selectedTowerData == null || !ResourceManager.Instance.CanAfford(selectedTowerData.Cost))
+            if (selectedTowerData == null || !CurrencyManager.Instance.CanAfford(selectedTowerData.Cost))
                 return;
 
             isPlacingTower = true;
@@ -204,7 +204,7 @@ namespace TowerDefense.Towers
                 return;
 
             // Check if player can afford the tower
-            if (selectedTowerData == null || !ResourceManager.Instance.SpendCurrency(selectedTowerData.Cost))
+            if (selectedTowerData == null || !CurrencyManager.Instance.SpendCurrency(selectedTowerData.Cost))
                 return;
 
             // Create tower
@@ -228,7 +228,7 @@ namespace TowerDefense.Towers
             else
             {
                 // Refund cost if tower creation failed
-                ResourceManager.Instance.AddCurrency(selectedTowerData.Cost);
+                CurrencyManager.Instance.AddCurrency(selectedTowerData.Cost);
             }
         }
         #endregion

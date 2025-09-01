@@ -29,7 +29,7 @@ namespace TowerDefense.UI.Components
         #region Unity Lifecycle
         private void Start()
         {
-            ResourceManager.OnCurrencyChanged += UpdateButtonInteractability;
+            CurrencyManager.OnCurrencyChanged += UpdateButtonInteractability;
             TowerController.OnTowerSelected += UpdateTowerInfo;
             button.onClick.AddListener(OnButtonClicked);
 
@@ -38,7 +38,7 @@ namespace TowerDefense.UI.Components
 
         private void OnDestroy()
         {
-            ResourceManager.OnCurrencyChanged -= UpdateButtonInteractability;
+            CurrencyManager.OnCurrencyChanged -= UpdateButtonInteractability;
             TowerController.OnTowerSelected -= UpdateTowerInfo;
             button.onClick.RemoveListener(OnButtonClicked);
         }
@@ -65,7 +65,7 @@ namespace TowerDefense.UI.Components
                 towerIcon.preserveAspect = true;
             }
 
-            UpdateButtonInteractability(ResourceManager.Instance.Currency);
+            UpdateButtonInteractability(CurrencyManager.Instance.Currency);
         }
 
         public void SetSelected(bool isSelected)

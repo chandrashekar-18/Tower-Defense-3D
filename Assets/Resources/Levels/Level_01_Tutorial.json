@@ -105,47 +105,37 @@
         {
             "enemyGroups": [
                 {
-                    "enemyId": "BasicEnemy",
-                    "count": 6,
-                    "spawnDelay": 1.154329776763916
-                },
-                {
-                    "enemyId": "BasicEnemy",
-                    "count": 6,
-                    "spawnDelay": 1.0193334817886353
+                    "enemyId": "fast_enemy",
+                    "count": 3,
+                    "spawnDelay": 1.9942845106124879
                 }
             ],
-            "delayBetweenGroups": 3.7464685440063478
+            "delayBetweenGroups": 2.3333985805511476
         },
         {
             "enemyGroups": [
                 {
-                    "enemyId": "BasicEnemy",
-                    "count": 5,
-                    "spawnDelay": 1.7518595457077027
+                    "enemyId": "fast_enemy",
+                    "count": 3,
+                    "spawnDelay": 1.3258247375488282
                 },
                 {
-                    "enemyId": "BasicEnemy",
+                    "enemyId": "fast_enemy",
                     "count": 3,
-                    "spawnDelay": 1.9005929231643677
+                    "spawnDelay": 1.2616024017333985
                 }
             ],
-            "delayBetweenGroups": 4.474634647369385
+            "delayBetweenGroups": 4.41918420791626
         },
         {
             "enemyGroups": [
                 {
-                    "enemyId": "BasicEnemy",
-                    "count": 3,
-                    "spawnDelay": 1.9205442667007447
-                },
-                {
-                    "enemyId": "BasicEnemy",
-                    "count": 3,
-                    "spawnDelay": 1.0758929252624512
+                    "enemyId": "fast_enemy",
+                    "count": 7,
+                    "spawnDelay": 1.5296516418457032
                 }
             ],
-            "delayBetweenGroups": 4.77959680557251
+            "delayBetweenGroups": 3.389678955078125
         }
     ],
     "startingCurrency": 300

@@ -25,7 +25,7 @@ namespace TowerDefense.Core
         #endregion
 
         #region Variables
-        [SerializeField] private int currentScore = 0;
+        private int currentScore = 0;
         public int CurrentScore => currentScore;
         #endregion
 
@@ -37,7 +37,6 @@ namespace TowerDefense.Core
         #region Unity Lifecycle
         private void Start()
         {
-            // Register for events
             WaveManager.OnEnemyDefeated += HandleEnemyDefeated;
             WaveManager.OnWaveCompleted += HandleWaveCompleted;
             GameManager.OnGameStateChanged += HandleGameStateChanged;
@@ -45,7 +44,6 @@ namespace TowerDefense.Core
 
         private void OnDestroy()
         {
-            // Unregister from events
             WaveManager.OnEnemyDefeated -= HandleEnemyDefeated;
             WaveManager.OnWaveCompleted -= HandleWaveCompleted;
             GameManager.OnGameStateChanged -= HandleGameStateChanged;
@@ -74,7 +72,6 @@ namespace TowerDefense.Core
 
         private void HandleWaveCompleted(int waveIndex)
         {
-            // Bonus score for completing a wave
             AddScore(50 + (waveIndex * 25));
         }
 
@@ -82,7 +79,6 @@ namespace TowerDefense.Core
         {
             if (newState == GameState.Playing)
             {
-                // Reset score when starting a new game
                 if (GameManager.Instance.CurrentLevel == 1)
                 {
                     ResetScore();

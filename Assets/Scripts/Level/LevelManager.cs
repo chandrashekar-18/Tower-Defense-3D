@@ -52,9 +52,11 @@ namespace TowerDefense.Level
                 Debug.LogError($"Invalid level index: {levelIndex}");
                 return;
             }
-
+            currentLevelData = levels[levelIndex - 1];
+            currentLevelData.DebugPrintGrid();
+            OnLevelLoaded?.Invoke(currentLevelData);
             SceneLoader.Instance.LoadScene(GameConstants.GameplayScene);
-            StartCoroutine(LoadLevelRoutine(levelIndex));
+            // StartCoroutine(LoadLevelRoutine(levelIndex));
         }
         #endregion
 
@@ -74,8 +76,7 @@ namespace TowerDefense.Level
         {
             yield return new WaitForEndOfFrame();
 
-            currentLevelData = levels[levelIndex - 1];
-            OnLevelLoaded?.Invoke(currentLevelData);
+            
         }
         #endregion
     }

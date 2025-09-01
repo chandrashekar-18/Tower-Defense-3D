@@ -33,25 +33,30 @@ namespace TowerDefense.UI.Menus
         #endregion
 
         #region Base Methods
+
+        void Start()
+        {
+            PopulateTowerButtons();
+        }
+        
         public override void Open()
         {
             base.Open();
             Debug.Log("Opening Gameplay Menu");
-            ResourceManager.OnCurrencyChanged += UpdateCurrencyDisplay;
+            CurrencyManager.OnCurrencyChanged += UpdateCurrencyDisplay;
             GameManager.OnPlayerLivesChanged += UpdateLivesDisplay;
             GameManager.OnLevelChanged += UpdateLevelDisplay;
             ScoreManager.OnScoreChanged += UpdateScoreDisplay;
             WaveManager.OnWaveStarted += HandleWaveStarted;
             WaveManager.OnTimeBetweenWavesChanged += UpdateNextWaveTimer;
             pauseBtn.onClick.AddListener(OnPauseBtnClicked);
-            PopulateTowerButtons();
         }
 
         public override void Close()
         {
             base.Close();
             Debug.Log("Closing Gameplay Menu");
-            ResourceManager.OnCurrencyChanged -= UpdateCurrencyDisplay;
+            CurrencyManager.OnCurrencyChanged -= UpdateCurrencyDisplay;
             GameManager.OnPlayerLivesChanged -= UpdateLivesDisplay;
             GameManager.OnLevelChanged -= UpdateLevelDisplay;
             ScoreManager.OnScoreChanged -= UpdateScoreDisplay;

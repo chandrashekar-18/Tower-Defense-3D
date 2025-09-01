@@ -16,43 +16,197 @@ MonoBehaviour:
   levelName: Level 2
   gridWidth: 15
   gridHeight: 10
+  serializedGrid:
+    cells:
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 4
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 3
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 4
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 1
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 4
+    - CellType: 0
+    - CellType: 0
+    - CellType: 2
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 1
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    - CellType: 0
+    width: 15
+    height: 10
   waves:
   - enemyGroups:
-    - enemyId: BasicEnemy
-      count: 7
-      spawnDelay: 1.6528226
-    - enemyId: BasicEnemy
-      count: 7
-      spawnDelay: 1.2817581
-    - enemyId: FastEnemy
-      count: 6
-      spawnDelay: 1.4822965
-    delayBetweenGroups: 3.4332428
-  - enemyGroups:
-    - enemyId: BasicEnemy
+    - enemyId: fast_enemy
       count: 4
-      spawnDelay: 1.4164376
-    - enemyId: FastEnemy
-      count: 3
-      spawnDelay: 1.2310041
-    - enemyId: BasicEnemy
-      count: 6
-      spawnDelay: 1.4863517
-    delayBetweenGroups: 2.845903
+      spawnDelay: 1.0849363
+    - enemyId: basic_enemy
+      count: 4
+      spawnDelay: 1.0814131
+    delayBetweenGroups: 3.3311195
   - enemyGroups:
-    - enemyId: FastEnemy
-      count: 6
-      spawnDelay: 1.2913032
-    - enemyId: BasicEnemy
-      count: 6
-      spawnDelay: 1.7646027
-    delayBetweenGroups: 4.676115
-  - enemyGroups:
-    - enemyId: BasicEnemy
-      count: 6
-      spawnDelay: 1.3081095
-    - enemyId: FastEnemy
+    - enemyId: fast_enemy
+      count: 4
+      spawnDelay: 1.9324999
+    - enemyId: fast_enemy
       count: 5
-      spawnDelay: 1.8889184
-    delayBetweenGroups: 3.9697888
+      spawnDelay: 1.6471272
+    - enemyId: fast_enemy
+      count: 3
+      spawnDelay: 1.5452828
+    delayBetweenGroups: 4.192333
+  - enemyGroups:
+    - enemyId: basic_enemy
+      count: 7
+      spawnDelay: 1.5014479
+    - enemyId: fast_enemy
+      count: 6
+      spawnDelay: 1.8455653
+    - enemyId: basic_enemy
+      count: 6
+      spawnDelay: 1.32583
+    delayBetweenGroups: 4.577613
+  - enemyGroups:
+    - enemyId: fast_enemy
+      count: 7
+      spawnDelay: 1.3874979
+    - enemyId: basic_enemy
+      count: 7
+      spawnDelay: 1.6288368
+    delayBetweenGroups: 3.3976626
   startingCurrency: 300

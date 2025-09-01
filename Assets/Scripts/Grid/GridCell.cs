@@ -71,7 +71,6 @@ namespace TowerDefense.Grid
 
         public void UpdateVisuals()
         {
-            // Update cell visuals based on type
             if (cellRenderer != null)
             {
                 switch (cellType)
