@@ -69,26 +69,7 @@ namespace TowerDefense.Core
         #region Private Methods
         private void HandleEnemyDefeated(Enemy enemy)
         {
-            // Add score based on enemy type
-            int scoreValue = 0;
-
-            switch (enemy.EnemyType)
-            {
-                case EnemyType.Basic:
-                    scoreValue = 10;
-                    break;
-                case EnemyType.Fast:
-                    scoreValue = 15;
-                    break;
-                case EnemyType.Tank:
-                    scoreValue = 25;
-                    break;
-                case EnemyType.TowerAttacker:
-                    scoreValue = 30;
-                    break;
-            }
-
-            AddScore(scoreValue);
+            AddScore(enemy.EnemyData.ScoreValue);
         }
 
         private void HandleWaveCompleted(int waveIndex)

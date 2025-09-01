@@ -48,9 +48,9 @@ namespace TowerDefense.UI.Handlers
         {
             menuManager.OpenMenu(type);
         }
-        public void SelectTower(int towerTypeIndex)
+        public void SelectTower(string towerId)
         {
-            towerController.SelectTower((TowerType)towerTypeIndex);
+            towerController.SelectTower(towerId);
         }
 
         public void StartTowerPlacement()

@@ -10,15 +10,25 @@ namespace TowerDefense.Level
     [System.Serializable]
     public class WaveData
     {
-        [SerializeField] private List<EnemyGroupData> _enemyGroups = new List<EnemyGroupData>();
-        [SerializeField] private float _delayBetweenGroups = 3f;
+        [SerializeField] private List<EnemyGroupData> enemyGroups = new List<EnemyGroupData>();
+        [SerializeField] private float delayBetweenGroups = 3f;
 
-        public List<EnemyGroupData> EnemyGroups => _enemyGroups;
-        public float DelayBetweenGroups { get => _delayBetweenGroups; set => _delayBetweenGroups = value; }
+        public List<EnemyGroupData> EnemyGroups => enemyGroups;
+        public float DelayBetweenGroups => delayBetweenGroups;
 
         public void AddEnemyGroup(EnemyGroupData group)
         {
-            _enemyGroups.Add(group);
+            enemyGroups.Add(group);
+        }
+
+        public int GetTotalEnemyCount()
+        {
+            int total = 0;
+            foreach (var group in enemyGroups)
+            {
+                total += group.Count;
+            }
+            return total;
         }
     }
 
@@ -28,13 +38,13 @@ namespace TowerDefense.Level
     [System.Serializable]
     public class EnemyGroupData
     {
-        [SerializeField] private EnemyType _enemyType = EnemyType.Basic;
-        [SerializeField] private int _count = 5;
-        [SerializeField] private float _spawnDelay = 1f;
+        [SerializeField] private string enemyId;
+        [SerializeField] private int count = 5;
+        [SerializeField] private float spawnDelay = 1f;
 
-        public EnemyType EnemyType { get => _enemyType; set => _enemyType = value; }
-        public int Count { get => _count; set => _count = value; }
-        public float SpawnDelay { get => _spawnDelay; set => _spawnDelay = value; }
+        public string EnemyId => enemyId;
+        public int Count => count;
+        public float SpawnDelay => spawnDelay;
     }
 
     /// <summary>
@@ -76,13 +86,13 @@ namespace TowerDefense.Level
     [System.Serializable]
     public class EnemyGroupDataSerializable
     {
-        public int enemyType;
+        public string enemyId;
         public int count;
         public float spawnDelay;
 
         public EnemyGroupDataSerializable(EnemyGroupData groupData)
         {
-            enemyType = (int)groupData.EnemyType;
+            enemyId = groupData.EnemyId;
             count = groupData.Count;
             spawnDelay = groupData.SpawnDelay;
         }

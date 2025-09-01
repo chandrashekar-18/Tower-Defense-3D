@@ -43,6 +43,7 @@ namespace TowerDefense.Core
         public bool IsLastWave => currentWaveIndex >= waves.Count - 1;
         public int RemainingEnemies => remainingEnemiesInWave;
         public bool IsSpawning => isSpawning;
+        public WaveData CurrentWave => currentWaveIndex >= 0 && currentWaveIndex < waves.Count ? waves[currentWaveIndex] : null;
         #endregion
 
         #region Events
@@ -135,6 +136,15 @@ namespace TowerDefense.Core
                 }
             }
         }
+
+        /// <summary>
+        /// Get preview of upcoming wave
+        /// </summary>
+        public WaveData GetUpcomingWave()
+        {
+            int nextWaveIndex = currentWaveIndex + 1;
+            return nextWaveIndex < waves.Count ? waves[nextWaveIndex] : null;
+        }
         #endregion
 
         #region Private Methods
@@ -158,11 +168,7 @@ namespace TowerDefense.Core
             OnWaveStarted?.Invoke(currentWaveIndex, waveData);
 
             // Count total enemies in wave
-            remainingEnemiesInWave = 0;
-            foreach (var enemyGroup in waveData.EnemyGroups)
-            {
-                remainingEnemiesInWave += enemyGroup.Count;
-            }
+            remainingEnemiesInWave = waveData.GetTotalEnemyCount();
 
             // Spawn enemy groups
             foreach (var enemyGroup in waveData.EnemyGroups)
@@ -170,7 +176,7 @@ namespace TowerDefense.Core
                 for (int i = 0; i < enemyGroup.Count; i++)
                 {
                     // Spawn enemy at random spawn point
-                    SpawnEnemy(enemyGroup.EnemyType);
+                    SpawnEnemy(enemyGroup.EnemyId);
 
                     // Wait between spawns
                     yield return new WaitForSeconds(enemyGroup.SpawnDelay);
@@ -203,7 +209,7 @@ namespace TowerDefense.Core
             }
         }
 
-        private void SpawnEnemy(EnemyType enemyType)
+        private void SpawnEnemy(string enemyId)
         {
             // Choose random spawn point
             Transform[] spawnPoints = GridManager.Instance.GetSpawnPoints();
@@ -218,8 +224,15 @@ namespace TowerDefense.Core
             // Get path from spawn point
             List<Vector3> path = GridManager.Instance.GetPathFromSpawnPoint(spawnPoint);
 
-            // Create enemy
-            Enemy enemy = enemyFactory.CreateEnemy(enemyType, spawnPoint.position, path);
+            // Create enemy using factory
+            Enemy enemy = enemyFactory.CreateEnemy(enemyId, spawnPoint.position, path);
+            
+            if (enemy == null)
+            {
+                Debug.LogError($"Failed to create enemy '{enemyId}'!");
+                remainingEnemiesInWave--; // Reduce count to prevent infinite waiting
+                return;
+            }
 
             // Register for defeat event
             enemy.OnDefeated += EnemyDefeated;

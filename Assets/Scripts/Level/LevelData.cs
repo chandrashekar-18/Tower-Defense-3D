@@ -36,23 +36,15 @@ namespace TowerDefense.Level
             gridHeight = 10;
             startingCurrency = 300;
 
-            // Initialize grid data
             gridData = new CellTypeData[gridWidth, gridHeight];
 
             for (int x = 0; x < gridWidth; x++)
             {
                 for (int z = 0; z < gridHeight; z++)
                 {
-                    // Default to empty cells
                     gridData[x, z] = new CellTypeData { CellType = Grid.CellType.Empty };
                 }
             }
-
-            // Create a simple path
-            // CreateDefaultPath();
-
-            // Create default waves
-            // CreateDefaultWaves();
         }
 
         public Grid.CellType GetCellType(int x, int z)
@@ -101,53 +93,6 @@ namespace TowerDefense.Level
             return serializable.ToLevelData();
         }
         #endregion
-
-        #region Private Methods
-        // private void CreateDefaultPath()
-        // {
-        //     // Create a simple path from left to right
-        //     int pathZ = gridHeight / 2;
-
-        //     // Add spawn point on left
-        //     SetCellType(0, pathZ, Grid.CellType.SpawnPoint);
-
-        //     // Add path
-        //     for (int x = 1; x < gridWidth - 1; x++)
-        //     {
-        //         SetCellType(x, pathZ, Grid.CellType.Path);
-        //     }
-
-        //     // Add exit point on right
-        //     SetCellType(gridWidth - 1, pathZ, Grid.CellType.ExitPoint);
-        // }
-
-        // private void CreateDefaultWaves()
-        // {
-        //     // Create 3 increasingly difficult waves
-        //     for (int i = 0; i < 3; i++)
-        //     {
-        //         WaveData wave = new WaveData();
-        //         wave.DelayBetweenGroups = 5f;
-
-        //         // Add enemy groups
-        //         int groupCount = 2 + i;
-        //         for (int g = 0; g < groupCount; g++)
-        //         {
-        //             EnemyGroupData group = new EnemyGroupData();
-        //             group.EnemyType = (g % 2 == 0) ? Enemies.EnemyType.Basic :
-        //                              (i >= 2) ? Enemies.EnemyType.TowerAttacker :
-        //                              (i >= 1) ? Enemies.EnemyType.Tank :
-        //                              Enemies.EnemyType.Fast;
-        //             group.Count = 5 + (i * 3);
-        //             group.SpawnDelay = 1f;
-
-        //             wave.EnemyGroups.Add(group);
-        //         }
-
-        //         waves.Add(wave);
-        //     }
-        // }
-        #endregion
     }
 
     /// <summary>
@@ -181,7 +126,6 @@ namespace TowerDefense.Level
             gridHeight = levelData.GridHeight;
             startingCurrency = levelData.StartingCurrency;
 
-            // Flatten grid data
             gridDataFlattened = new int[gridWidth * gridHeight];
             for (int x = 0; x < gridWidth; x++)
             {
@@ -191,7 +135,6 @@ namespace TowerDefense.Level
                 }
             }
 
-            // Convert waves
             waves = new List<WaveDataSerializable>();
             foreach (WaveData wave in levelData.Waves)
             {
@@ -203,10 +146,8 @@ namespace TowerDefense.Level
         {
             LevelData levelData = ScriptableObject.CreateInstance<LevelData>();
 
-            // Set basic properties
             levelData.InitializeDefaultValues();
 
-            // Set grid data
             for (int x = 0; x < gridWidth; x++)
             {
                 for (int z = 0; z < gridHeight; z++)
@@ -216,7 +157,6 @@ namespace TowerDefense.Level
                 }
             }
 
-            // Set waves
             levelData.ClearWaves();
             foreach (WaveDataSerializable waveSerializable in waves)
             {

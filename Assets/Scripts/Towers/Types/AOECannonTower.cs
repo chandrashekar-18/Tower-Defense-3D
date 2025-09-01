@@ -8,6 +8,7 @@ namespace TowerDefense.Towers
     public class AOECannonTower : Tower
     {
         #region Variables
+        [Header("AOE Cannon Properties")]
         [SerializeField] private float aoeRadius = 2f;
         #endregion
 
@@ -24,7 +25,7 @@ namespace TowerDefense.Towers
 
                 if (projectile != null)
                 {
-                    projectile.Initialize(currentTarget, damage);
+                    projectile.Initialize(currentTarget, towerData.Damage);
                     projectile.SetAOERadius(aoeRadius);
                 }
                 else
@@ -32,7 +33,7 @@ namespace TowerDefense.Towers
                     Projectile baseProjectile = projectileObj.GetComponent<Projectile>();
                     if (baseProjectile != null)
                     {
-                        baseProjectile.Initialize(currentTarget, damage);
+                        baseProjectile.Initialize(currentTarget, towerData.Damage);
                     }
                 }
             }

@@ -1,10 +1,11 @@
 using UnityEngine;
 using TowerDefense.Utils;
+using System.Collections.Generic;
 
 namespace TowerDefense.Towers
 {
     /// <summary>
-    /// Object pool for projectiles.
+    /// Object pool for projectiles with automatic type detection.
     /// </summary>
     public class ProjectilePool : MonoBehaviour
     {
@@ -24,65 +25,61 @@ namespace TowerDefense.Towers
         #endregion
 
         #region Variables
-        [SerializeField] private Projectile basicProjectilePrefab;
-        [SerializeField] private Projectile aoeProjectilePrefab;
-        [SerializeField] private Projectile sniperProjectilePrefab;
-        [SerializeField] private Projectile slowProjectilePrefab;
         [SerializeField] private int initialPoolSize = 20;
-
-        private ObjectPool<Projectile> basicProjectilePool;
-        private ObjectPool<Projectile> aoeProjectilePool;
-        private ObjectPool<Projectile> sniperProjectilePool;
-        private ObjectPool<Projectile> slowProjectilePool;
+        
+        private Dictionary<string, ObjectPool<Projectile>> projectilePools = new Dictionary<string, ObjectPool<Projectile>>();
+        private Transform poolContainer;
         #endregion
 
         #region Unity Lifecycle
         private void Start()
         {
-            Transform container = new GameObject("ProjectilePoolContainer").transform;
-            container.SetParent(transform);
-
-            basicProjectilePool = new ObjectPool<Projectile>(basicProjectilePrefab, initialPoolSize, container);
-            aoeProjectilePool = new ObjectPool<Projectile>(aoeProjectilePrefab, initialPoolSize, container);
-            sniperProjectilePool = new ObjectPool<Projectile>(sniperProjectilePrefab, initialPoolSize, container);
-            slowProjectilePool = new ObjectPool<Projectile>(slowProjectilePrefab, initialPoolSize, container);
+            poolContainer = new GameObject("ProjectilePoolContainer").transform;
+            poolContainer.SetParent(transform);
         }
         #endregion
 
         #region Public Methods
-        public Projectile GetProjectile(TowerType towerType)
+        public Projectile GetProjectile(GameObject projectilePrefab)
         {
-            switch (towerType)
+            if (projectilePrefab == null)
+                return null;
+
+            string prefabName = projectilePrefab.name;
+            
+            // Create pool if it doesn't exist
+            if (!projectilePools.ContainsKey(prefabName))
             {
-                case TowerType.AOECannon:
-                    return aoeProjectilePool.Get();
-                case TowerType.Sniper:
-                    return sniperProjectilePool.Get();
-                case TowerType.Slow:
-                    return slowProjectilePool.Get();
-                case TowerType.Basic:
-                default:
-                    return basicProjectilePool.Get();
+                Projectile projectileComponent = projectilePrefab.GetComponent<Projectile>();
+                if (projectileComponent != null)
+                {
+                    projectilePools[prefabName] = new ObjectPool<Projectile>(projectileComponent, initialPoolSize, poolContainer);
+                }
+                else
+                {
+                    Debug.LogError($"Projectile prefab {prefabName} doesn't have a Projectile component");
+                    return null;
+                }
             }
+
+            return projectilePools[prefabName].Get();
         }
 
-        public void ReturnProjectile(Projectile projectile, TowerType towerType)
+        public void ReturnProjectile(Projectile projectile)
         {
-            switch (towerType)
+            if (projectile == null)
+                return;
+
+            string prefabName = projectile.name.Replace("(Clone)", "");
+            
+            if (projectilePools.ContainsKey(prefabName))
             {
-                case TowerType.AOECannon:
-                    aoeProjectilePool.Return(projectile);
-                    break;
-                case TowerType.Sniper:
-                    sniperProjectilePool.Return(projectile);
-                    break;
-                case TowerType.Slow:
-                    slowProjectilePool.Return(projectile);
-                    break;
-                case TowerType.Basic:
-                default:
-                    basicProjectilePool.Return(projectile);
-                    break;
+                projectilePools[prefabName].Return(projectile);
+            }
+            else
+            {
+                // If pool doesn't exist, just destroy the projectile
+                Destroy(projectile.gameObject);
             }
         }
         #endregion

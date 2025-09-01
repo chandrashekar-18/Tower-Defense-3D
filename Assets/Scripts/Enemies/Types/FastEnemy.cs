@@ -4,25 +4,33 @@ using System.Collections;
 namespace TowerDefense.Enemies
 {
     /// <summary>
-    /// Fast enemy that moves quickly but has less health
+    /// Fast enemy that moves quickly and has speed boost ability.
+    /// Example of how to add special behaviors to enemies.
     /// </summary>
     public class FastEnemy : Enemy
     {
+        #region Fast Enemy Variables
+        [Header("Fast Enemy Properties")]
         [SerializeField] private float speedBoostInterval = 5f;
         [SerializeField] private float speedBoostDuration = 2f;
         [SerializeField] private float speedBoostMultiplier = 1.5f;
-        
+
         private float speedBoostTimer;
         private bool boosting = false;
-        
-        protected override void Start()
+        #endregion
+
+        #region Overridden Methods
+        protected override void OnEnemyInitialized()
         {
-            base.Start();
+            base.OnEnemyInitialized();
             speedBoostTimer = speedBoostInterval;
         }
-        
+
         protected override void ExecuteBehavior()
         {
+            base.ExecuteBehavior();
+
+            // Handle speed boost behavior
             if (!boosting)
             {
                 speedBoostTimer -= Time.deltaTime;
@@ -33,28 +41,31 @@ namespace TowerDefense.Enemies
                 }
             }
         }
-        
+        #endregion
+
+        #region Private Methods
         private IEnumerator ApplySpeedBoost()
         {
             boosting = true;
-            
-            float originalSpeed = moveSpeed;
+
+            float originalSpeed = enemyData.MoveSpeed;
             moveSpeed *= speedBoostMultiplier;
-            
+
             if (animator != null)
             {
                 animator.SetBool("SpeedBoost", true);
             }
-            
+
             yield return new WaitForSeconds(speedBoostDuration);
-            
+
             moveSpeed = originalSpeed;
             if (animator != null)
             {
                 animator.SetBool("SpeedBoost", false);
             }
-            
+
             boosting = false;
         }
+        #endregion
     }
 }

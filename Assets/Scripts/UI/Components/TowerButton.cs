@@ -78,15 +78,15 @@ namespace TowerDefense.UI.Components
         #endregion
 
         #region Callbacks
-        private void UpdateTowerInfo(TowerType towerType, TowerData towerData)
+        private void UpdateTowerInfo(string towerID, TowerData towerData)
         {
-            SetSelected(TowerData.TowerType == towerType);
+            SetSelected(TowerData.TowerID == towerID);
         }
 
         private void OnButtonClicked()
         {
             // Select this tower
-            GameplayUIHandler.Instance.SelectTower((int)TowerData.TowerType);
+            GameplayUIHandler.Instance.SelectTower(TowerData.TowerID);
 
             // Start placement mode
             GameplayUIHandler.Instance.StartTowerPlacement();

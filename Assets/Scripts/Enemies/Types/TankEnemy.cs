@@ -3,40 +3,59 @@ using UnityEngine;
 namespace TowerDefense.Enemies
 {
     /// <summary>
-    /// Tank enemy with high health but slow movement
+    /// Tank enemy with high health and damage resistance.
+    /// Example of how to modify damage processing.
     /// </summary>
     public class TankEnemy : Enemy
     {
-        [SerializeField] private float damageResistance = 0.25f; // 25% damage reduction
+        #region Tank Enemy Variables
+        [Header("Tank Enemy Properties")]
+        [SerializeField] private float damageResistance = 0.25f;
+        [SerializeField] private bool explodeOnDeath = true;
+        [SerializeField] private float explosionRadius = 2f;
+        [SerializeField] private int explosionDamage = 50;
+        #endregion
         
-        public override void TakeDamage(int damage)
+        #region Overridden Methods
+        protected override int ProcessIncomingDamage(int damage)
         {
             int reducedDamage = Mathf.RoundToInt(damage * (1f - damageResistance));
-            base.TakeDamage(reducedDamage);
+            return Mathf.Max(1, reducedDamage);
         }
         
-        protected override void ExecuteBehavior()
+        protected override void OnEnemyDeath()
         {
-            // Tank has no special active behavior, just damage resistance
-        }
-        
-        protected override void InitializeFromData()
-        {
-            base.InitializeFromData();
+            base.OnEnemyDeath();
             
-            if (enemyData != null)
+            if (explodeOnDeath)
             {
-                // Tank typically has higher health, more damage, but slower speed
-                // Could apply additional modifiers here if needed
+                CreateExplosionEffect();
+                
+                DamageNearbyEnemies();
             }
         }
+        #endregion
         
-        protected override void Die()
+        #region Private Methods
+        private void CreateExplosionEffect()
         {
-            // Tank explosion with area damage upon death
-            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, 0f); // No self-damage
-            
-            base.Die();
+            // You would instantiate explosion particle effect here
+            Debug.Log($"Tank enemy exploded at {transform.position}!");
         }
+        
+        private void DamageNearbyEnemies()
+        {
+            Collider[] nearbyColliders = Physics.OverlapSphere(transform.position, explosionRadius);
+            
+            foreach (Collider collider in nearbyColliders)
+            {
+                Enemy nearbyEnemy = collider.GetComponent<Enemy>();
+                if (nearbyEnemy != null && nearbyEnemy != this && nearbyEnemy.IsAlive)
+                {
+                    nearbyEnemy.TakeDamage(explosionDamage);
+                }
+            }
+        }
+        #endregion
     }
 }

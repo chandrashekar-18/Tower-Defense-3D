@@ -1,41 +1,37 @@
 using UnityEngine;
 using TowerDefense.Core;
 using System.Collections;
-using TowerDefense.Towers;
 using System.Collections.Generic;
+using TowerDefense.UI.Components;
 
 namespace TowerDefense.Enemies
 {
     /// <summary>
     /// Base class for all enemies.
     /// </summary>
-    public abstract class Enemy : MonoBehaviour
+    public class Enemy : MonoBehaviour
     {
         #region Variables
         [Header("Base Enemy Properties")]
-        [SerializeField] protected EnemyData enemyData;
-        [SerializeField] protected int maxHealth = 100;
-        [SerializeField] protected int currentHealth;
-        [SerializeField] protected float moveSpeed = 3f;
-        [SerializeField] protected int damage = 1;
-        [SerializeField] protected int currencyReward = 20;
-        [SerializeField] protected List<Vector3> path = new List<Vector3>();
-        [SerializeField] protected int currentPathIndex = 0;
         [SerializeField] protected Animator animator;
-        [SerializeField] protected GameObject healthBarPrefab;
-        [SerializeField] protected Transform healthBarPoint;
+        [SerializeField] protected EnemyHealthUI healthUI;
 
+        protected EnemyData enemyData;
+        protected int currentHealth;
+        protected List<Vector3> path = new List<Vector3>();
+        protected int currentPathIndex = 0;
+        protected float moveSpeed;
         protected bool isAlive = true;
         protected bool reachedEnd = false;
-        protected GameObject healthBar;
         #endregion
 
         #region Properties
         public bool IsAlive => isAlive;
         public bool ReachedEnd => reachedEnd;
         public int CurrentHealth => currentHealth;
-        public int MaxHealth => maxHealth;
-        public EnemyType EnemyType => enemyData != null ? enemyData.EnemyType : EnemyType.Basic;
+        public int MaxHealth => enemyData.Health;
+        public string EnemyId => enemyData.EnemyId;
+        public EnemyData EnemyData => enemyData;
         #endregion
 
         #region Events
@@ -52,15 +48,8 @@ namespace TowerDefense.Enemies
         #region Unity Lifecycle
         protected virtual void Start()
         {
-            InitializeFromData();
-
-            if (healthBarPrefab != null && healthBarPoint != null)
-            {
-                healthBar = Instantiate(healthBarPrefab, healthBarPoint.position, Quaternion.identity, healthBarPoint);
-            }
-
-            currentHealth = maxHealth;
-            UpdateHealthBar();
+            Initialize();
+            OnEnemyInitialized();
         }
 
         protected virtual void Update()
@@ -72,7 +61,8 @@ namespace TowerDefense.Enemies
             {
                 MoveAlongPath();
             }
-            
+
+            // Call custom behavior for derived classes
             ExecuteBehavior();
         }
         #endregion
@@ -84,7 +74,7 @@ namespace TowerDefense.Enemies
             this.path = new List<Vector3>(path); // Create a copy
             currentPathIndex = 0;
 
-            InitializeFromData();
+            Initialize();
         }
 
         public virtual void TakeDamage(int damage)
@@ -92,10 +82,12 @@ namespace TowerDefense.Enemies
             if (!isAlive)
                 return;
 
-            currentHealth -= damage;
-            UpdateHealthBar();
+            // Allow derived classes to modify damage
+            int finalDamage = ProcessIncomingDamage(damage);
 
-            OnHealthChanged?.Invoke(currentHealth, maxHealth);
+            currentHealth -= finalDamage;
+
+            OnHealthChanged?.Invoke(currentHealth, enemyData.Health);
 
             if (animator != null)
             {
@@ -114,25 +106,46 @@ namespace TowerDefense.Enemies
         }
         #endregion
 
-        #region Protected Methods
+        #region Protected Virtual Methods - Override these in derived classes
         /// <summary>
         /// Override this method in derived classes to implement specific enemy behavior
         /// </summary>
         protected virtual void ExecuteBehavior()
         {
-            
+            // Base implementation does nothing
         }
-        
-        protected virtual void InitializeFromData()
+
+        /// <summary>
+        /// Called after basic initialization is complete
+        /// </summary>
+        protected virtual void OnEnemyInitialized()
         {
-            if (enemyData != null)
-            {
-                maxHealth = enemyData.Health;
-                currentHealth = maxHealth;
-                moveSpeed = enemyData.MoveSpeed;
-                damage = enemyData.Damage;
-                currencyReward = enemyData.CurrencyReward;
-            }
+            // Base implementation does nothing
+        }
+
+        /// <summary>
+        /// Override to modify incoming damage (for armor, resistances, etc.)
+        /// </summary>
+        protected virtual int ProcessIncomingDamage(int damage)
+        {
+            return damage; // No modification by default
+        }
+
+        /// <summary>
+        /// Override to add custom death behavior
+        /// </summary>
+        protected virtual void OnEnemyDeath()
+        {
+            // Base implementation does nothing
+        }
+        #endregion
+
+        #region Protected Methods
+        protected virtual void Initialize()
+        {
+            currentHealth = enemyData.Health;
+            moveSpeed = enemyData.MoveSpeed;
+            healthUI.Initialize(this);
         }
 
         protected virtual void MoveAlongPath()
@@ -175,7 +188,7 @@ namespace TowerDefense.Enemies
         {
             reachedEnd = true;
 
-            GameManager.Instance.ReducePlayerLives(damage);
+            GameManager.Instance.ReducePlayerLives(enemyData.Damage);
 
             OnReachedEnd?.Invoke(this);
 
@@ -186,12 +199,13 @@ namespace TowerDefense.Enemies
         {
             isAlive = false;
 
-            ResourceManager.Instance.AddCurrency(currencyReward);
+            ResourceManager.Instance.AddCurrency(enemyData.CurrencyReward);
+
+            OnEnemyDeath();
 
             if (animator != null)
             {
                 animator.SetTrigger("Die");
-
                 StartCoroutine(DestroyAfterAnimation());
             }
             else
@@ -208,22 +222,9 @@ namespace TowerDefense.Enemies
             Destroy(gameObject);
         }
 
-        protected virtual void UpdateHealthBar()
-        {
-            if (healthBar != null)
-            {
-                Transform fill = healthBar.transform.Find("Fill");
-                if (fill != null)
-                {
-                    float healthPercent = (float)currentHealth / maxHealth;
-                    fill.localScale = new Vector3(healthPercent, 1, 1);
-                }
-            }
-        }
-
         protected virtual IEnumerator SlowRoutine(float slowFactor, float duration)
         {
-            float originalSpeed = moveSpeed;
+            float originalSpeed = enemyData.MoveSpeed;
             moveSpeed *= (1f - slowFactor);
 
             yield return new WaitForSeconds(duration);

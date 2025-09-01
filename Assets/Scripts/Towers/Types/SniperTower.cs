@@ -8,6 +8,7 @@ namespace TowerDefense.Towers
     public class SniperTower : Tower
     {
         #region Variables
+        [Header("Sniper Properties")]
         [SerializeField] private float criticalHitChance = 0.25f;
         [SerializeField] private float criticalHitMultiplier = 2f;
         #endregion
@@ -18,7 +19,7 @@ namespace TowerDefense.Towers
             if (currentTarget == null)
                 return;
 
-            int damage = this.damage;
+            int damage = towerData.Damage;
 
             if (Random.value < criticalHitChance)
             {

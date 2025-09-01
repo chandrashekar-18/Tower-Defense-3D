@@ -1,5 +1,7 @@
 using UnityEngine;
+using TowerDefense.Core;
 using TowerDefense.Enemies;
+using TowerDefense.UI.Components;
 
 namespace TowerDefense.Towers
 {
@@ -10,30 +12,41 @@ namespace TowerDefense.Towers
     {
         #region Variables
         [Header("Base Tower Properties")]
-        [SerializeField] protected TowerData towerData;
-        [SerializeField] protected float attackRange = 3f;
-        [SerializeField] protected float attackRate = 1f;
-        [SerializeField] protected int damage = 10;
+        [SerializeField] protected TowerHealthUI healthUI;
         [SerializeField] protected float rotationSpeed = 5f;
         [SerializeField] protected Transform turretHead;
         [SerializeField] protected Transform firingPoint;
         [SerializeField] protected GameObject projectilePrefab;
         [SerializeField] protected LayerMask enemyLayerMask;
 
+        protected TowerData towerData;
         protected float attackTimer = 0f;
         protected Enemy currentTarget;
         protected bool isStunned = false;
         protected float stunTimer = 0f;
+        protected int currentHealth;
+        protected bool isDestroyed = false;
         #endregion
 
         #region Properties
         public TowerData TowerData => towerData;
-        public float AttackRange => attackRange;
-        public int Damage => damage;
+        public float AttackRange => towerData.Range;
+        public int Damage => towerData.Damage;
         public bool IsStunned => isStunned;
+        public int CurrentHealth => currentHealth;
+        public int MaxHealth => towerData.MaxHealth;
+        public bool IsDestroyed => isDestroyed;
+        public bool CanBeRepaired => towerData.CanBeRepaired;
+        public int RepairCost => towerData.RepairCost;
         #endregion
 
         #region Events
+        public delegate void TowerHealthChangedDelegate(Tower tower, int currentHealth, int maxHealth);
+        public event TowerHealthChangedDelegate OnHealthChanged;
+
+        public delegate void TowerDestroyedDelegate(Tower tower);
+        public event TowerDestroyedDelegate OnDestroyed;
+
         public delegate void TowerFiredDelegate(Tower tower, Enemy target);
         public TowerFiredDelegate OnTowerFired;
 
@@ -47,21 +60,11 @@ namespace TowerDefense.Towers
         #region Unity Lifecycle
         protected virtual void Start()
         {
-            // Initialize tower from data
-            if (towerData != null)
-            {
-                attackRange = towerData.Range;
-                attackRate = towerData.FireRate;
-                damage = towerData.Damage;
-            }
-
-            // Reset attack timer
             attackTimer = 0f;
         }
 
         protected virtual void Update()
         {
-            // Handle stun effect
             if (isStunned)
             {
                 stunTimer -= Time.deltaTime;
@@ -73,14 +76,12 @@ namespace TowerDefense.Towers
                 return;
             }
 
-            // Find target if none
             if (currentTarget == null)
             {
                 FindTarget();
             }
             else
             {
-                // Check if target is still valid
                 if (!IsValidTarget(currentTarget))
                 {
                     currentTarget = null;
@@ -88,25 +89,16 @@ namespace TowerDefense.Towers
                 }
                 else
                 {
-                    // Rotate towards target
                     RotateTowardsTarget();
 
-                    // Attack if ready
                     attackTimer -= Time.deltaTime;
                     if (attackTimer <= 0f)
                     {
                         Attack();
-                        attackTimer = 1f / attackRate;
+                        attackTimer = 1f / towerData.FireRate;
                     }
                 }
             }
-        }
-
-        protected virtual void OnDrawGizmosSelected()
-        {
-            // Draw attack range
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, attackRange);
         }
         #endregion
 
@@ -114,9 +106,48 @@ namespace TowerDefense.Towers
         public virtual void Initialize(TowerData towerData)
         {
             this.towerData = towerData;
-            attackRange = towerData.Range;
-            attackRate = towerData.FireRate;
-            damage = towerData.Damage;
+            currentHealth = towerData.MaxHealth;
+            isDestroyed = false;
+            healthUI.Initialize(this);
+        }
+
+        public virtual void TakeDamage(int damage)
+        {
+            if (isDestroyed)
+                return;
+
+            currentHealth -= damage;
+            OnHealthChanged?.Invoke(this, currentHealth, towerData.MaxHealth);
+
+            if (currentHealth <= 0)
+            {
+                DestroyTower();
+            }
+        }
+
+        public virtual bool Repair()
+        {
+            if (!isDestroyed || !towerData.CanBeRepaired)
+                return false;
+
+            if (ResourceManager.Instance.SpendCurrency(towerData.RepairCost))
+            {
+                currentHealth = towerData.MaxHealth;
+                isDestroyed = false;
+                OnHealthChanged?.Invoke(this, currentHealth, towerData.MaxHealth);
+                return true;
+            }
+
+            return false;
+        }
+
+        protected virtual void DestroyTower()
+        {
+            isDestroyed = true;
+            OnDestroyed?.Invoke(this);
+
+            currentTarget = null;
+            isStunned = true;
         }
 
         public virtual void Upgrade()
@@ -135,8 +166,7 @@ namespace TowerDefense.Towers
         #region Protected Methods
         protected virtual void FindTarget()
         {
-            // Find nearest enemy within range
-            Collider[] colliders = Physics.OverlapSphere(transform.position, attackRange, enemyLayerMask);
+            Collider[] colliders = Physics.OverlapSphere(transform.position, towerData.Range, enemyLayerMask);
 
             float nearestDistance = float.MaxValue;
             Enemy nearestEnemy = null;
@@ -164,7 +194,7 @@ namespace TowerDefense.Towers
                 return false;
 
             float distance = Vector3.Distance(transform.position, target.transform.position);
-            return distance <= attackRange;
+            return distance <= towerData.Range;
         }
 
         protected virtual void RotateTowardsTarget()
@@ -173,7 +203,7 @@ namespace TowerDefense.Towers
                 return;
 
             Vector3 targetDirection = currentTarget.transform.position - turretHead.position;
-            targetDirection.y = 0f; // Keep rotation on horizontal plane
+            targetDirection.y = 0f;
 
             Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
             turretHead.rotation = Quaternion.Slerp(turretHead.rotation, targetRotation, rotationSpeed * Time.deltaTime);
@@ -184,7 +214,6 @@ namespace TowerDefense.Towers
             if (currentTarget == null)
                 return;
 
-            // Fire projectile
             if (projectilePrefab != null && firingPoint != null)
             {
                 GameObject projectileObj = Instantiate(projectilePrefab, firingPoint.position, firingPoint.rotation);
@@ -192,16 +221,14 @@ namespace TowerDefense.Towers
 
                 if (projectile != null)
                 {
-                    projectile.Initialize(currentTarget, damage);
+                    projectile.Initialize(currentTarget, towerData.Damage);
                 }
             }
             else
             {
-                // Direct damage (no projectile)
-                currentTarget.TakeDamage(damage);
+                currentTarget.TakeDamage(towerData.Damage);
             }
 
-            // Notify listeners
             OnTowerFired?.Invoke(this, currentTarget);
         }
         #endregion

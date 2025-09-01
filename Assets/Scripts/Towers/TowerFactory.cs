@@ -1,47 +1,69 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TowerDefense.Towers
 {
     /// <summary>
-    /// Factory for creating different tower types.
+    /// Factory for creating towers from TowerData ScriptableObjects.
     /// </summary>
     public class TowerFactory : MonoBehaviour
     {
         #region Variables
         [SerializeField] private List<TowerData> availableTowers = new List<TowerData>();
-        [SerializeField] private GameObject basicTowerPrefab;
-        [SerializeField] private GameObject aoeCannonPrefab;
-        [SerializeField] private GameObject sniperTowerPrefab;
-        [SerializeField] private GameObject slowTowerPrefab;
-
-        private Dictionary<TowerType, GameObject> towerPrefabs = new Dictionary<TowerType, GameObject>();
-        private Dictionary<TowerType, TowerData> towerDataByType = new Dictionary<TowerType, TowerData>();
+        
+        private Dictionary<string, TowerData> towerDataByID = new Dictionary<string, TowerData>();
         #endregion
 
         #region Unity Lifecycle
         private void Awake()
         {
-            InitializeTowerPrefabs();
             LoadTowerData();
         }
         #endregion
 
         #region Public Methods
-        public GameObject CreateTower(TowerType towerType, Vector3 position)
+        public GameObject CreateTower(string towerID, Vector3 position)
         {
-            if (!towerPrefabs.TryGetValue(towerType, out GameObject prefab))
+            if (!towerDataByID.TryGetValue(towerID, out TowerData towerData))
             {
-                Debug.LogError($"Tower prefab not found for type: {towerType}");
+                Debug.LogError($"Tower data not found for ID: {towerID}");
+                return null;
+            }
+
+            if (towerData.TowerPrefab == null)
+            {
+                Debug.LogError($"Tower prefab is null for ID: {towerID}");
                 return null;
             }
 
             // Create tower instance
-            GameObject towerObject = Instantiate(prefab, position, Quaternion.identity);
+            GameObject towerObject = Instantiate(towerData.TowerPrefab, position, Quaternion.identity);
 
             // Initialize tower with data
             Tower tower = towerObject.GetComponent<Tower>();
-            if (tower != null && towerDataByType.TryGetValue(towerType, out TowerData towerData))
+            if (tower != null)
+            {
+                tower.Initialize(towerData);
+            }
+
+            return towerObject;
+        }
+
+        public GameObject CreateTower(TowerData towerData, Vector3 position)
+        {
+            if (towerData == null || towerData.TowerPrefab == null)
+            {
+                Debug.LogError("Invalid tower data or prefab");
+                return null;
+            }
+
+            // Create tower instance
+            GameObject towerObject = Instantiate(towerData.TowerPrefab, position, Quaternion.identity);
+
+            // Initialize tower with data
+            Tower tower = towerObject.GetComponent<Tower>();
+            if (tower != null)
             {
                 tower.Initialize(towerData);
             }
@@ -51,76 +73,48 @@ namespace TowerDefense.Towers
 
         public List<TowerData> GetAvailableTowers()
         {
-            return availableTowers;
+            return availableTowers.ToList(); // Return copy to prevent external modification
         }
 
-        public TowerData GetTowerData(TowerType towerType)
+        public TowerData GetTowerData(string towerID)
         {
-            if (towerDataByType.TryGetValue(towerType, out TowerData towerData))
-            {
-                return towerData;
-            }
+            towerDataByID.TryGetValue(towerID, out TowerData towerData);
+            return towerData;
+        }
 
-            return null;
+        public void RegisterTowerData(TowerData towerData)
+        {
+            if (towerData != null && !string.IsNullOrEmpty(towerData.TowerID))
+            {
+                if (!towerDataByID.ContainsKey(towerData.TowerID))
+                {
+                    availableTowers.Add(towerData);
+                    towerDataByID[towerData.TowerID] = towerData;
+                }
+            }
         }
         #endregion
 
         #region Private Methods
-        private void InitializeTowerPrefabs()
-        {
-            // Map tower types to prefabs
-            towerPrefabs[TowerType.Basic] = basicTowerPrefab;
-            towerPrefabs[TowerType.AOECannon] = aoeCannonPrefab;
-            towerPrefabs[TowerType.Sniper] = sniperTowerPrefab;
-            towerPrefabs[TowerType.Slow] = slowTowerPrefab;
-        }
-
         private void LoadTowerData()
         {
+            // Clear existing data
+            availableTowers.Clear();
+            towerDataByID.Clear();
+
             // Load tower data from resources
             TowerData[] towerDatas = Resources.LoadAll<TowerData>("Towers");
-            if (towerDatas != null && towerDatas.Length > 0)
+            
+            foreach (TowerData data in towerDatas)
             {
-                availableTowers.AddRange(towerDatas);
-
-                // Map types to data
-                foreach (TowerData data in towerDatas)
+                if (data != null && !string.IsNullOrEmpty(data.TowerID))
                 {
-                    towerDataByType[data.TowerType] = data;
+                    availableTowers.Add(data);
+                    towerDataByID[data.TowerID] = data;
                 }
             }
-            else
-            {
-                // Create default tower data
-                CreateDefaultTowerData();
-            }
-        }
 
-        private void CreateDefaultTowerData()
-        {
-            // Basic Tower
-            TowerData basicTower = ScriptableObject.CreateInstance<TowerData>();
-            basicTower.Initialize(TowerType.Basic, "Basic Tower", "Basic defensive tower", 100, 3f, 1f, 10);
-            availableTowers.Add(basicTower);
-            towerDataByType[TowerType.Basic] = basicTower;
-
-            // AOE Cannon
-            TowerData aoeCannon = ScriptableObject.CreateInstance<TowerData>();
-            aoeCannon.Initialize(TowerType.AOECannon, "AOE Cannon", "Deals splash damage", 200, 2.5f, 0.5f, 15);
-            availableTowers.Add(aoeCannon);
-            towerDataByType[TowerType.AOECannon] = aoeCannon;
-
-            // Sniper Tower
-            TowerData sniperTower = ScriptableObject.CreateInstance<TowerData>();
-            sniperTower.Initialize(TowerType.Sniper, "Sniper Tower", "Long range, high damage", 250, 6f, 0.25f, 40);
-            availableTowers.Add(sniperTower);
-            towerDataByType[TowerType.Sniper] = sniperTower;
-
-            // Slow Tower
-            TowerData slowTower = ScriptableObject.CreateInstance<TowerData>();
-            slowTower.Initialize(TowerType.Slow, "Slow Tower", "Slows enemies", 150, 3.5f, 0.75f, 5);
-            availableTowers.Add(slowTower);
-            towerDataByType[TowerType.Slow] = slowTower;
+            Debug.Log($"Loaded {availableTowers.Count} tower types");
         }
         #endregion
     }

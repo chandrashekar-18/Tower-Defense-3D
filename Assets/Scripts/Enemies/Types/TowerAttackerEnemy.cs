@@ -4,11 +4,12 @@ using TowerDefense.Towers;
 namespace TowerDefense.Enemies
 {
     /// <summary>
-    /// Enemy that can attack and temporarily disable towers
+    /// Enemy that can attack and temporarily disable towers.
+    /// Example of how to add complex behaviors.
     /// </summary>
     public class TowerAttackerEnemy : Enemy
     {
-        #region Variables
+        #region Tower Attacker Variables
         [Header("Tower Attacker Properties")]
         [SerializeField] private bool canAttackTowers = true;
         [SerializeField] private float attackRange = 2f;
@@ -24,10 +25,10 @@ namespace TowerDefense.Enemies
         public event EnemyAttackedTowerDelegate OnAttackedTower;
         #endregion
 
-        #region Base Methods
-        protected override void InitializeFromData()
+        #region Overridden Methods
+        protected override void OnEnemyInitialized()
         {
-            base.InitializeFromData();
+            base.OnEnemyInitialized();
 
             if (enemyData != null)
             {
@@ -40,40 +41,50 @@ namespace TowerDefense.Enemies
 
         protected override void ExecuteBehavior()
         {
+            base.ExecuteBehavior();
+            
             if (canAttackTowers)
             {
-                // Check for towers in range
-                if (currentTowerTarget == null)
-                {
-                    FindTowerTarget();
-                }
-                else
-                {
-                    // Check if target is still valid
-                    if (!IsValidTowerTarget(currentTowerTarget))
-                    {
-                        currentTowerTarget = null;
-                    }
-                    else
-                    {
-                        // Attack if ready
-                        attackTimer -= Time.deltaTime;
-                        if (attackTimer <= 0f)
-                        {
-                            AttackTower();
-                            attackTimer = 1f / attackRate;
-                        }
-                    }
-                }
+                HandleTowerAttacking();
             }
         }
         #endregion
 
         #region Private Methods
+        private void HandleTowerAttacking()
+        {
+            // Check for towers in range
+            if (currentTowerTarget == null)
+            {
+                FindTowerTarget();
+            }
+            else
+            {
+                // Check if target is still valid
+                if (!IsValidTowerTarget(currentTowerTarget))
+                {
+                    currentTowerTarget = null;
+                }
+                else
+                {
+                    // Attack if ready
+                    attackTimer -= Time.deltaTime;
+                    if (attackTimer <= 0f)
+                    {
+                        AttackTower();
+                        attackTimer = 1f / attackRate;
+                    }
+                }
+            }
+        }
+
         private void FindTowerTarget()
         {
             // Find nearest tower within range
             Collider[] colliders = Physics.OverlapSphere(transform.position, attackRange);
+
+            Tower closestTower = null;
+            float closestDistance = float.MaxValue;
 
             foreach (Collider collider in colliders)
             {
@@ -81,13 +92,15 @@ namespace TowerDefense.Enemies
                 if (tower != null)
                 {
                     float distance = Vector3.Distance(transform.position, tower.transform.position);
-                    if (distance <= attackRange)
+                    if (distance <= attackRange && distance < closestDistance)
                     {
-                        currentTowerTarget = tower;
-                        break;
+                        closestTower = tower;
+                        closestDistance = distance;
                     }
                 }
             }
+
+            currentTowerTarget = closestTower;
         }
 
         private bool IsValidTowerTarget(Tower tower)
@@ -109,9 +122,13 @@ namespace TowerDefense.Enemies
                 animator.SetTrigger("Attack");
             }
 
+            // Stun the tower
             currentTowerTarget.Stun(towerStunDuration);
 
+            // Trigger event
             OnAttackedTower?.Invoke(currentTowerTarget);
+            
+            Debug.Log($"Tower Attacker stunned tower for {towerStunDuration} seconds!");
         }
         #endregion
     }

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887821ff03b073e42a069b0a0d3f6dd7, type: 3}
+  m_Name: BasicEnemy
+  m_EditorClassIdentifier: 
+  enemyId: basic_enemy
+  enemyName: Basic Enemy
+  enemyPrefab: {fileID: 5339702903596219646, guid: 64cf652eda3e5a7468f31431f0c2cae5, type: 3}
+  health: 100
+  moveSpeed: 3
+  damage: 1
+  scoreValue: 10
+  currencyReward: 20
+  canAttackTowers: 1
+  attackRange: 0
+  attackRate: 0
+  towerStunDuration: 0
+  icon: {fileID: 0}

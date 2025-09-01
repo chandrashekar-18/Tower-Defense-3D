@@ -9,49 +9,36 @@ namespace TowerDefense.Towers
     public class TowerData : ScriptableObject
     {
         #region Variables
-        [SerializeField] private TowerType towerType;
+        [Header("Identity")]
+        [SerializeField] private string towerID;
         [SerializeField] private string towerName;
         [SerializeField] private string description;
+        [SerializeField] private Sprite icon;
+        [SerializeField] private GameObject towerPrefab;
+        [Header("Health Settings")]
+        [SerializeField] private int maxHealth = 100;
+        [SerializeField] private bool canBeRepaired = true;
+        [SerializeField] private int repairCost = 25;
+        [Header("Combat Settings")]
         [SerializeField] private int cost;
         [SerializeField] private float range;
         [SerializeField] private float fireRate;
         [SerializeField] private int damage;
-        [SerializeField] private Sprite icon;
         #endregion
 
         #region Properties
-        public TowerType TowerType => towerType;
+        public string TowerID => towerID;
         public string TowerName => towerName;
         public string Description => description;
+        public int MaxHealth => maxHealth;
+        public bool CanBeRepaired => canBeRepaired;
+        public int RepairCost => repairCost;
         public int Cost => cost;
         public float Range => range;
         public float FireRate => fireRate;
         public int Damage => damage;
         public Sprite Icon => icon;
+        public GameObject TowerPrefab => towerPrefab;
         #endregion
-
-        #region Public Methods
-        public void Initialize(TowerType type, string name, string description, int cost, float range, float fireRate, int damage)
-        {
-            towerType = type;
-            towerName = name;
-            this.description = description;
-            this.cost = cost;
-            this.range = range;
-            this.fireRate = fireRate;
-            this.damage = damage;
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// Enum for different tower types.
-    /// </summary>
-    public enum TowerType
-    {
-        Basic,
-        AOECannon,
-        Sniper,
-        Slow
     }
 }

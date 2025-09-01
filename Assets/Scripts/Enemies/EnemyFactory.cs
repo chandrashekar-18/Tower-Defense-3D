@@ -1,121 +1,153 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TowerDefense.Enemies
 {
     /// <summary>
-    /// Factory for creating different enemy types.
+    /// Factory for creating enemies based on EnemyData.
     /// </summary>
     public class EnemyFactory : MonoBehaviour
     {
         #region Variables
-        [SerializeField] private GameObject basicEnemyPrefab;
-        [SerializeField] private GameObject fastEnemyPrefab;
-        [SerializeField] private GameObject tankEnemyPrefab;
-        [SerializeField] private GameObject towerAttackerPrefab;
-
-        private Dictionary<EnemyType, GameObject> enemyPrefabs = new Dictionary<EnemyType, GameObject>();
-        private Dictionary<EnemyType, EnemyData> enemyDataByType = new Dictionary<EnemyType, EnemyData>();
-
-        private Transform enemyContainer;
+        [SerializeField] private List<EnemyData> availableEnemies = new List<EnemyData>();
+        
+        private Dictionary<string, EnemyData> enemyDatabase = new Dictionary<string, EnemyData>();
         #endregion
 
         #region Unity Lifecycle
         private void Awake()
         {
-            InitializeEnemyPrefabs();
-            LoadEnemyData();
-
-            // Create container for enemies
-            GameObject container = new GameObject("EnemyContainer");
-            enemyContainer = container.transform;
+            BuildEnemyDatabase();
         }
         #endregion
 
         #region Public Methods
-        public Enemy CreateEnemy(EnemyType enemyType, Vector3 position, List<Vector3> path)
+        /// <summary>
+        /// Create an enemy by ID
+        /// </summary>
+        public Enemy CreateEnemy(string enemyId, Vector3 spawnPosition, List<Vector3> path)
         {
-            if (!enemyPrefabs.TryGetValue(enemyType, out GameObject prefab))
+            if (!enemyDatabase.ContainsKey(enemyId))
             {
-                Debug.LogError($"Enemy prefab not found for type: {enemyType}");
+                Debug.LogError($"Enemy with ID '{enemyId}' not found in database!");
                 return null;
             }
 
-            // Create enemy instance
-            GameObject enemyObject = Instantiate(prefab, position, Quaternion.identity, enemyContainer);
-
-            // Initialize enemy with data and path
-            Enemy enemy = enemyObject.GetComponent<Enemy>();
-            if (enemy != null && enemyDataByType.TryGetValue(enemyType, out EnemyData enemyData))
+            EnemyData enemyData = enemyDatabase[enemyId];
+            
+            if (enemyData.EnemyPrefab == null)
             {
-                enemy.Initialize(enemyData, path);
+                Debug.LogError($"No prefab assigned to enemy '{enemyId}'!");
+                return null;
             }
+
+            // Instantiate the prefab
+            GameObject enemyObject = Instantiate(enemyData.EnemyPrefab, spawnPosition, Quaternion.identity);
+            
+            // Get the Enemy component
+            Enemy enemy = enemyObject.GetComponent<Enemy>();
+            if (enemy == null)
+            {
+                Debug.LogError($"Enemy prefab '{enemyId}' doesn't have an Enemy component!");
+                Destroy(enemyObject);
+                return null;
+            }
+
+            // Initialize the enemy
+            enemy.Initialize(enemyData, path);
 
             return enemy;
         }
 
-        public EnemyData GetEnemyData(EnemyType enemyType)
+        /// <summary>
+        /// Create an enemy using EnemyData directly
+        /// </summary>
+        public Enemy CreateEnemy(EnemyData enemyData, Vector3 spawnPosition, List<Vector3> path)
         {
-            if (enemyDataByType.TryGetValue(enemyType, out EnemyData enemyData))
+            if (enemyData == null || enemyData.EnemyPrefab == null)
             {
-                return enemyData;
+                Debug.LogError("Invalid enemy data or missing prefab!");
+                return null;
             }
 
-            return null;
+            GameObject enemyObject = Instantiate(enemyData.EnemyPrefab, spawnPosition, Quaternion.identity);
+            Enemy enemy = enemyObject.GetComponent<Enemy>();
+            
+            if (enemy == null)
+            {
+                Debug.LogError($"Enemy prefab '{enemyData.EnemyName}' doesn't have an Enemy component!");
+                Destroy(enemyObject);
+                return null;
+            }
+
+            enemy.Initialize(enemyData, path);
+            return enemy;
+        }
+
+        /// <summary>
+        /// Get all available enemy IDs
+        /// </summary>
+        public string[] GetAvailableEnemyIds()
+        {
+            return enemyDatabase.Keys.ToArray();
+        }
+
+        /// <summary>
+        /// Get enemy data by ID
+        /// </summary>
+        public EnemyData GetEnemyData(string enemyId)
+        {
+            return enemyDatabase.ContainsKey(enemyId) ? enemyDatabase[enemyId] : null;
+        }
+
+        /// <summary>
+        /// Add new enemy data at runtime (useful for modding or DLC)
+        /// </summary>
+        public void RegisterEnemyData(EnemyData enemyData)
+        {
+            if (enemyData != null && !string.IsNullOrEmpty(enemyData.EnemyId))
+            {
+                enemyDatabase[enemyData.EnemyId] = enemyData;
+                if (!availableEnemies.Contains(enemyData))
+                {
+                    availableEnemies.Add(enemyData);
+                }
+            }
         }
         #endregion
 
         #region Private Methods
-        private void InitializeEnemyPrefabs()
+        private void BuildEnemyDatabase()
         {
-            // Map enemy types to prefabs
-            enemyPrefabs[EnemyType.Basic] = basicEnemyPrefab;
-            enemyPrefabs[EnemyType.Fast] = fastEnemyPrefab;
-            enemyPrefabs[EnemyType.Tank] = tankEnemyPrefab;
-            enemyPrefabs[EnemyType.TowerAttacker] = towerAttackerPrefab;
-        }
-
-        private void LoadEnemyData()
-        {
-            // Load enemy data from resources
-            EnemyData[] enemyDatas = Resources.LoadAll<EnemyData>("Enemies");
-            if (enemyDatas != null && enemyDatas.Length > 0)
+            enemyDatabase.Clear();
+            
+            foreach (EnemyData enemyData in availableEnemies)
             {
-                // Map types to data
-                foreach (EnemyData data in enemyDatas)
+                if (enemyData != null && !string.IsNullOrEmpty(enemyData.EnemyId))
                 {
-                    enemyDataByType[data.EnemyType] = data;
+                    if (enemyDatabase.ContainsKey(enemyData.EnemyId))
+                    {
+                        Debug.LogWarning($"Duplicate enemy ID '{enemyData.EnemyId}' found! Skipping...");
+                        continue;
+                    }
+                    
+                    enemyDatabase[enemyData.EnemyId] = enemyData;
                 }
             }
-            else
-            {
-                // Create default enemy data
-                CreateDefaultEnemyData();
-            }
-        }
 
-        private void CreateDefaultEnemyData()
+            Debug.Log($"Enemy database built with {enemyDatabase.Count} enemy types.");
+        }
+        #endregion
+
+        #region Editor Methods
+#if UNITY_EDITOR
+        [ContextMenu("Refresh Enemy Database")]
+        private void RefreshDatabase()
         {
-            // Basic Enemy
-            EnemyData basicEnemy = ScriptableObject.CreateInstance<EnemyData>();
-            basicEnemy.Initialize(EnemyType.Basic, "Basic Enemy", 100, 3f, 1, 20);
-            enemyDataByType[EnemyType.Basic] = basicEnemy;
-
-            // Fast Enemy
-            EnemyData fastEnemy = ScriptableObject.CreateInstance<EnemyData>();
-            fastEnemy.Initialize(EnemyType.Fast, "Fast Enemy", 50, 6f, 1, 30);
-            enemyDataByType[EnemyType.Fast] = fastEnemy;
-
-            // Tank Enemy
-            EnemyData tankEnemy = ScriptableObject.CreateInstance<EnemyData>();
-            tankEnemy.Initialize(EnemyType.Tank, "Tank Enemy", 300, 1.5f, 2, 50);
-            enemyDataByType[EnemyType.Tank] = tankEnemy;
-
-            // Tower Attacker
-            EnemyData towerAttacker = ScriptableObject.CreateInstance<EnemyData>();
-            towerAttacker.Initialize(EnemyType.TowerAttacker, "Tower Attacker", 150, 2.5f, 1, 40, true);
-            enemyDataByType[EnemyType.TowerAttacker] = towerAttacker;
+            BuildEnemyDatabase();
         }
+#endif
         #endregion
     }
 }

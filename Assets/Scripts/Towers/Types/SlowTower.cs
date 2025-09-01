@@ -8,6 +8,7 @@ namespace TowerDefense.Towers
     public class SlowTower : Tower
     {
         #region Variables
+        [Header("Slow Properties")]
         [SerializeField] private float slowEffect = 0.5f;
         [SerializeField] private float slowDuration = 3f;
         #endregion
@@ -25,7 +26,7 @@ namespace TowerDefense.Towers
 
                 if (projectile != null)
                 {
-                    projectile.Initialize(currentTarget, damage);
+                    projectile.Initialize(currentTarget, towerData.Damage);
                     projectile.SetSlowEffect(slowEffect, slowDuration);
                 }
                 else
@@ -33,7 +34,7 @@ namespace TowerDefense.Towers
                     Projectile baseProjectile = projectileObj.GetComponent<Projectile>();
                     if (baseProjectile != null)
                     {
-                        baseProjectile.Initialize(currentTarget, damage);
+                        baseProjectile.Initialize(currentTarget, towerData.Damage);
 
                         currentTarget.Slow(slowEffect, slowDuration);
                     }

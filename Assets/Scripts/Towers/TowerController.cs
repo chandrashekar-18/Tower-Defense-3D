@@ -14,20 +14,22 @@ namespace TowerDefense.Towers
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask gridLayerMask;
         [SerializeField] private TowerFactory towerFactory;
-        [SerializeField] private TowerType selectedTowerType = TowerType.Basic;
+        [SerializeField] private string selectedTowerID = "basic"; // Use string ID instead
         [SerializeField] private GameObject placementIndicator;
 
         private bool isPlacingTower = false;
         private GridCell highlightedCell = null;
+        private TowerData selectedTowerData;
         #endregion
 
         #region Properties
-        public TowerType SelectedTowerType => selectedTowerType;
+        public string SelectedTowerID => selectedTowerID;
+        public TowerData SelectedTowerData => selectedTowerData;
         public bool IsPlacingTower => isPlacingTower;
         #endregion
 
         #region Events
-        public delegate void TowerSelectedDelegate(TowerType towerType, TowerData towerData);
+        public delegate void TowerSelectedDelegate(string towerID, TowerData towerData);
         public static event TowerSelectedDelegate OnTowerSelected;
 
         public delegate void TowerPlacedDelegate(Tower tower, GridCell cell);
@@ -54,6 +56,16 @@ namespace TowerDefense.Towers
             {
                 placementIndicator.SetActive(false);
             }
+
+            // Initialize with first available tower
+            if (towerFactory != null)
+            {
+                var availableTowers = towerFactory.GetAvailableTowers();
+                if (availableTowers.Count > 0)
+                {
+                    SelectTower(availableTowers[0].TowerID);
+                }
+            }
         }
 
         private void Update()
@@ -76,12 +88,12 @@ namespace TowerDefense.Towers
         #endregion
 
         #region Public Methods
-        public void SelectTower(TowerType towerType)
+        public void SelectTower(string towerID)
         {
-            selectedTowerType = towerType;
+            selectedTowerID = towerID;
+            selectedTowerData = towerFactory.GetTowerData(towerID);
 
-            TowerData towerData = towerFactory.GetTowerData(towerType);
-            OnTowerSelected?.Invoke(towerType, towerData);
+            OnTowerSelected?.Invoke(towerID, selectedTowerData);
         }
 
         public void StartPlacement()
@@ -90,8 +102,7 @@ namespace TowerDefense.Towers
                 return;
 
             // Check if player can afford the tower
-            TowerData towerData = towerFactory.GetTowerData(selectedTowerType);
-            if (towerData == null || !ResourceManager.Instance.CanAfford(towerData.Cost))
+            if (selectedTowerData == null || !ResourceManager.Instance.CanAfford(selectedTowerData.Cost))
                 return;
 
             isPlacingTower = true;
@@ -192,17 +203,12 @@ namespace TowerDefense.Towers
             if (!GridManager.Instance.CanPlaceTower(cell.X, cell.Z))
                 return;
 
-            // Get tower data
-            TowerData towerData = towerFactory.GetTowerData(selectedTowerType);
-            if (towerData == null)
-                return;
-
             // Check if player can afford the tower
-            if (!ResourceManager.Instance.SpendCurrency(towerData.Cost))
+            if (selectedTowerData == null || !ResourceManager.Instance.SpendCurrency(selectedTowerData.Cost))
                 return;
 
             // Create tower
-            GameObject towerObject = towerFactory.CreateTower(selectedTowerType, cell.WorldPosition);
+            GameObject towerObject = towerFactory.CreateTower(selectedTowerData, cell.WorldPosition);
 
             if (towerObject != null)
             {
@@ -222,7 +228,7 @@ namespace TowerDefense.Towers
             else
             {
                 // Refund cost if tower creation failed
-                ResourceManager.Instance.AddCurrency(towerData.Cost);
+                ResourceManager.Instance.AddCurrency(selectedTowerData.Cost);
             }
         }
         #endregion
