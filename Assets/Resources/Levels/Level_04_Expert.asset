@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de85e7defa7e434bb5fdf7463f344ea, type: 3}
+  m_Name: Level_04_Expert
+  m_EditorClassIdentifier: 
+  levelNumber: 4
+  levelName: Level 4
+  gridWidth: 18
+  gridHeight: 14
+  waves:
+  - enemyGroups:
+    - enemyId: TankEnemy
+      count: 5
+      spawnDelay: 1.1213447
+    - enemyId: BasicEnemy
+      count: 5
+      spawnDelay: 1.8086737
+    - enemyId: FlyingEnemy
+      count: 4
+      spawnDelay: 1.2785718
+    delayBetweenGroups: 3.551814
+  - enemyGroups:
+    - enemyId: TankEnemy
+      count: 3
+      spawnDelay: 1.137907
+    - enemyId: FastEnemy
+      count: 6
+      spawnDelay: 1.8701167
+    - enemyId: BossEnemy
+      count: 6
+      spawnDelay: 1.1085486
+    delayBetweenGroups: 4.1779737
+  - enemyGroups:
+    - enemyId: BasicEnemy
+      count: 3
+      spawnDelay: 1.818761
+    - enemyId: BasicEnemy
+      count: 7
+      spawnDelay: 1.3295736
+    - enemyId: FastEnemy
+      count: 7
+      spawnDelay: 1.7673438
+    - enemyId: TankEnemy
+      count: 6
+      spawnDelay: 1.6531614
+    delayBetweenGroups: 3.5125566
+  - enemyGroups:
+    - enemyId: BossEnemy
+      count: 5
+      spawnDelay: 1.4185815
+    - enemyId: FastEnemy
+      count: 7
+      spawnDelay: 1.5946517
+    - enemyId: TankEnemy
+      count: 5
+      spawnDelay: 1.8721554
+    - enemyId: BasicEnemy
+      count: 4
+      spawnDelay: 1.8336705
+    delayBetweenGroups: 2.614038
+  - enemyGroups:
+    - enemyId: FastEnemy
+      count: 7
+      spawnDelay: 1.3125203
+    - enemyId: BossEnemy
+      count: 6
+      spawnDelay: 1.8830247
+    - enemyId: TankEnemy
+      count: 4
+      spawnDelay: 1.3888121
+    delayBetweenGroups: 3.126904
+  - enemyGroups:
+    - enemyId: TankEnemy
+      count: 7
+      spawnDelay: 1.0643961
+    - enemyId: FlyingEnemy
+      count: 3
+      spawnDelay: 1.0694861
+    - enemyId: FastEnemy
+      count: 3
+      spawnDelay: 1.8711888
+    - enemyId: TankEnemy
+      count: 4
+      spawnDelay: 1.6543603
+    delayBetweenGroups: 3.717753
+  startingCurrency: 300

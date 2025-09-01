@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de85e7defa7e434bb5fdf7463f344ea, type: 3}
+  m_Name: Level_03_Advanced
+  m_EditorClassIdentifier: 
+  levelNumber: 3
+  levelName: Level 3
+  gridWidth: 16
+  gridHeight: 12
+  waves:
+  - enemyGroups:
+    - enemyId: BasicEnemy
+      count: 7
+      spawnDelay: 1.6177447
+    - enemyId: BasicEnemy
+      count: 6
+      spawnDelay: 1.2512014
+    - enemyId: BasicEnemy
+      count: 5
+      spawnDelay: 1.2364745
+    delayBetweenGroups: 4.31042
+  - enemyGroups:
+    - enemyId: FastEnemy
+      count: 4
+      spawnDelay: 1.2278707
+    - enemyId: FastEnemy
+      count: 6
+      spawnDelay: 1.8435427
+    delayBetweenGroups: 2.1498296
+  - enemyGroups:
+    - enemyId: TankEnemy
+      count: 3
+      spawnDelay: 1.7734536
+    - enemyId: TankEnemy
+      count: 6
+      spawnDelay: 1.5771427
+    - enemyId: FastEnemy
+      count: 7
+      spawnDelay: 1.8459476
+    delayBetweenGroups: 3.5999126
+  - enemyGroups:
+    - enemyId: FastEnemy
+      count: 5
+      spawnDelay: 1.6979731
+    - enemyId: FastEnemy
+      count: 5
+      spawnDelay: 1.2723498
+    - enemyId: TankEnemy
+      count: 3
+      spawnDelay: 1.5940421
+    - enemyId: TankEnemy
+      count: 4
+      spawnDelay: 1.9716208
+    delayBetweenGroups: 3.3666282
+  - enemyGroups:
+    - enemyId: FastEnemy
+      count: 4
+      spawnDelay: 1.629414
+    - enemyId: TankEnemy
+      count: 7
+      spawnDelay: 1.9639485
+    delayBetweenGroups: 3.1893
+  startingCurrency: 300

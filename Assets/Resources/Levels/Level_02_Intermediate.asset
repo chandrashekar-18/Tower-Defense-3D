@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de85e7defa7e434bb5fdf7463f344ea, type: 3}
+  m_Name: Level_02_Intermediate
+  m_EditorClassIdentifier: 
+  levelNumber: 2
+  levelName: Level 2
+  gridWidth: 15
+  gridHeight: 10
+  waves:
+  - enemyGroups:
+    - enemyId: BasicEnemy
+      count: 7
+      spawnDelay: 1.6528226
+    - enemyId: BasicEnemy
+      count: 7
+      spawnDelay: 1.2817581
+    - enemyId: FastEnemy
+      count: 6
+      spawnDelay: 1.4822965
+    delayBetweenGroups: 3.4332428
+  - enemyGroups:
+    - enemyId: BasicEnemy
+      count: 4
+      spawnDelay: 1.4164376
+    - enemyId: FastEnemy
+      count: 3
+      spawnDelay: 1.2310041
+    - enemyId: BasicEnemy
+      count: 6
+      spawnDelay: 1.4863517
+    delayBetweenGroups: 2.845903
+  - enemyGroups:
+    - enemyId: FastEnemy
+      count: 6
+      spawnDelay: 1.2913032
+    - enemyId: BasicEnemy
+      count: 6
+      spawnDelay: 1.7646027
+    delayBetweenGroups: 4.676115
+  - enemyGroups:
+    - enemyId: BasicEnemy
+      count: 6
+      spawnDelay: 1.3081095
+    - enemyId: FastEnemy
+      count: 5
+      spawnDelay: 1.8889184
+    delayBetweenGroups: 3.9697888
+  startingCurrency: 300

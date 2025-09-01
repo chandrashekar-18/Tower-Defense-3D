@@ -1,0 +1,152 @@
+{
+    "levelNumber": 1,
+    "levelName": "Level 1",
+    "gridWidth": 12,
+    "gridHeight": 8,
+    "gridDataFlattened": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "waves": [
+        {
+            "enemyGroups": [
+                {
+                    "enemyId": "BasicEnemy",
+                    "count": 6,
+                    "spawnDelay": 1.154329776763916
+                },
+                {
+                    "enemyId": "BasicEnemy",
+                    "count": 6,
+                    "spawnDelay": 1.0193334817886353
+                }
+            ],
+            "delayBetweenGroups": 3.7464685440063478
+        },
+        {
+            "enemyGroups": [
+                {
+                    "enemyId": "BasicEnemy",
+                    "count": 5,
+                    "spawnDelay": 1.7518595457077027
+                },
+                {
+                    "enemyId": "BasicEnemy",
+                    "count": 3,
+                    "spawnDelay": 1.9005929231643677
+                }
+            ],
+            "delayBetweenGroups": 4.474634647369385
+        },
+        {
+            "enemyGroups": [
+                {
+                    "enemyId": "BasicEnemy",
+                    "count": 3,
+                    "spawnDelay": 1.9205442667007447
+                },
+                {
+                    "enemyId": "BasicEnemy",
+                    "count": 3,
+                    "spawnDelay": 1.0758929252624512
+                }
+            ],
+            "delayBetweenGroups": 4.77959680557251
+        }
+    ],
+    "startingCurrency": 300
+}

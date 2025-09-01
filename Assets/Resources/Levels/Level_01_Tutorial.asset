@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de85e7defa7e434bb5fdf7463f344ea, type: 3}
+  m_Name: Level_01_Tutorial
+  m_EditorClassIdentifier: 
+  levelNumber: 1
+  levelName: Level 1
+  gridWidth: 12
+  gridHeight: 8
+  waves:
+  - enemyGroups:
+    - enemyId: BasicEnemy
+      count: 6
+      spawnDelay: 1.1543298
+    - enemyId: BasicEnemy
+      count: 6
+      spawnDelay: 1.0193335
+    delayBetweenGroups: 3.7464685
+  - enemyGroups:
+    - enemyId: BasicEnemy
+      count: 5
+      spawnDelay: 1.7518595
+    - enemyId: BasicEnemy
+      count: 3
+      spawnDelay: 1.9005929
+    delayBetweenGroups: 4.4746346
+  - enemyGroups:
+    - enemyId: BasicEnemy
+      count: 3
+      spawnDelay: 1.9205443
+    - enemyId: BasicEnemy
+      count: 3
+      spawnDelay: 1.0758929
+    delayBetweenGroups: 4.779597
+  startingCurrency: 300
