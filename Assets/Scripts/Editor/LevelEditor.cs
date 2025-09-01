@@ -28,6 +28,10 @@ namespace TowerDefense.Editor
         private bool allowDiagonals = false;
         private int minPathLength = 10;
 
+        // Cache for enemy data
+        private string[] availableEnemyIds;
+        private bool enemyDataLoaded = false;
+
         private readonly CellType[] cellTypes =
         {
             CellType.Empty,
@@ -67,6 +71,7 @@ namespace TowerDefense.Editor
         private void OnGUI()
         {
             InitializeStyles();
+            LoadEnemyData();
 
             // Header
             EditorGUILayout.BeginVertical(boxStyle);
@@ -92,6 +97,36 @@ namespace TowerDefense.Editor
             DrawWaveEditorSection();
 
             EditorGUILayout.EndScrollView();
+        }
+        #endregion
+
+        #region Enemy Data Loading
+        private void LoadEnemyData()
+        {
+            if (enemyDataLoaded) return;
+
+            // Load all EnemyData ScriptableObjects from Resources
+            Object[] enemyAssets = Resources.LoadAll("", typeof(ScriptableObject));
+            List<string> enemyIds = new List<string>();
+
+            foreach (Object asset in enemyAssets)
+            {
+                // Assuming your EnemyData has a name or id property
+                // Adjust this based on your actual EnemyData structure
+                if (asset.GetType().Name.Contains("EnemyData") || asset.name.Contains("Enemy"))
+                {
+                    enemyIds.Add(asset.name);
+                }
+            }
+
+            // If no enemy data found, use default enemy types
+            if (enemyIds.Count == 0)
+            {
+                enemyIds.AddRange(new string[] { "BasicEnemy", "FastEnemy", "TankEnemy", "FlyingEnemy", "BossEnemy" });
+            }
+
+            availableEnemyIds = enemyIds.ToArray();
+            enemyDataLoaded = true;
         }
         #endregion
 
@@ -202,17 +237,35 @@ namespace TowerDefense.Editor
             string json = currentLevel.ToJson();
             File.WriteAllText(path, json);
 
-            // Also save as asset
-            string assetPath = "Assets/Resources/Levels/" + currentLevel.name + ".asset";
+            // Find existing asset path by name
+            string[] guids = AssetDatabase.FindAssets(currentLevel.name + " t:LevelData");
+            string existingAssetPath = null;
 
-            Directory.CreateDirectory(Path.GetDirectoryName(assetPath));
+            if (guids.Length > 0)
+            {
+                existingAssetPath = AssetDatabase.GUIDToAssetPath(guids[0]);
+            }
 
-            AssetDatabase.CreateAsset(currentLevel, assetPath);
+            // If no existing asset found, create new path
+            if (string.IsNullOrEmpty(existingAssetPath))
+            {
+                existingAssetPath = "Assets/Resources/Levels/" + currentLevel.name + ".asset";
+                Directory.CreateDirectory(Path.GetDirectoryName(existingAssetPath));
+                AssetDatabase.CreateAsset(currentLevel, existingAssetPath);
+            }
+            else
+            {
+                // Update existing ScriptableObject
+                LevelData existingLevel = AssetDatabase.LoadAssetAtPath<LevelData>(existingAssetPath);
+                EditorUtility.CopySerialized(currentLevel, existingLevel);
+            }
+
             AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
 
             EditorUtility.DisplayDialog(
                 "Level Saved Successfully! 🎉",
-                $"Level saved to:\n{path}\n\nAnd as asset:\n{assetPath}",
+                $"Level saved to:\n{path}\n\nAnd as asset:\n{existingAssetPath}",
                 "Awesome!"
             );
         }
@@ -228,39 +281,60 @@ namespace TowerDefense.Editor
             if (showLevelProperties)
             {
                 EditorGUILayout.Space(5);
+                currentLevel.LevelName = EditorGUILayout.TextField("🏷️ Level Name", currentLevel.LevelName);
+                currentLevel.name = currentLevel.LevelName;
 
-                currentLevel.name = EditorGUILayout.TextField("🏷️ Level Name", currentLevel.name);
+                EditorGUILayout.Space(5);
 
-                SerializedObject serializedObject = new SerializedObject(currentLevel);
-                SerializedProperty levelNumberProperty = serializedObject.FindProperty("levelNumber");
-                SerializedProperty startingCurrencyProperty = serializedObject.FindProperty("startingCurrency");
-                SerializedProperty gridWidthProperty = serializedObject.FindProperty("gridWidth");
-                SerializedProperty gridHeightProperty = serializedObject.FindProperty("gridHeight");
+                EditorGUI.BeginChangeCheck();
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel("🔢 Level Number");
+                string levelNumberStr = EditorGUILayout.DelayedTextField(currentLevel.LevelNumber.ToString(), GUILayout.Width(100));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    if (int.TryParse(levelNumberStr, out int newLevel))
+                    {
+                        currentLevel.LevelNumber = Mathf.Max(1, newLevel);
+                        EditorUtility.SetDirty(currentLevel);
+                    }
+                }
 
-                EditorGUILayout.PropertyField(levelNumberProperty, new GUIContent("🔢 Level Number"));
-                EditorGUILayout.PropertyField(startingCurrencyProperty, new GUIContent("💰 Starting Currency"));
+                EditorGUILayout.EndHorizontal();
+                EditorGUI.BeginChangeCheck();
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel("💰 Starting Currency");
+                string currencyStr = EditorGUILayout.DelayedTextField(currentLevel.StartingCurrency.ToString(), GUILayout.Width(100));
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    if (int.TryParse(currencyStr, out int newCurrency))
+                    {
+                        currentLevel.StartingCurrency = Mathf.Max(0, newCurrency);
+                        EditorUtility.SetDirty(currentLevel);
+                    }
+                }
+                EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.Space(10);
-                EditorGUILayout.LabelField("📐 Grid Size", EditorStyles.boldLabel);
+                EditorGUILayout.LabelField("📏 Grid Size", EditorStyles.boldLabel);
 
                 EditorGUI.BeginChangeCheck();
 
-                // Grid size sliders with value labels
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Width", GUILayout.Width(50));
-                int newWidth = EditorGUILayout.IntSlider(gridWidthProperty.intValue, 5, 30);
+                int newWidth = EditorGUILayout.IntSlider(currentLevel.GridWidth, 5, 30);
                 EditorGUILayout.LabelField(newWidth.ToString(), GUILayout.Width(30));
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Height", GUILayout.Width(50));
-                int newHeight = EditorGUILayout.IntSlider(gridHeightProperty.intValue, 5, 30);
+                int newHeight = EditorGUILayout.IntSlider(currentLevel.GridHeight, 5, 30);
                 EditorGUILayout.LabelField(newHeight.ToString(), GUILayout.Width(30));
                 EditorGUILayout.EndHorizontal();
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if (newWidth != gridWidthProperty.intValue || newHeight != gridHeightProperty.intValue)
+                    if (newWidth != currentLevel.GridWidth || newHeight != currentLevel.GridHeight)
                     {
                         Undo.RecordObject(currentLevel, "Resize Grid");
                         currentLevel.ResizeGrid(newWidth, newHeight);
@@ -268,7 +342,10 @@ namespace TowerDefense.Editor
                     }
                 }
 
-                serializedObject.ApplyModifiedProperties();
+                if (GUI.changed)
+                {
+                    EditorUtility.SetDirty(currentLevel);
+                }
             }
 
             EditorGUILayout.EndVertical();
@@ -733,7 +810,7 @@ namespace TowerDefense.Editor
             if (GUILayout.Button("➕ Add Wave", buttonStyle, GUILayout.Width(120)))
             {
                 WaveData newWave = new WaveData();
-                newWave.AddEnemyGroup(new EnemyGroupData());
+                newWave.AddEnemyGroup(CreateRandomEnemyGroup());
                 currentLevel.AddWave(newWave);
             }
 
@@ -758,7 +835,7 @@ namespace TowerDefense.Editor
                 {
                     WaveData wave = currentLevel.Waves[i];
                     int totalEnemies = wave.GetTotalEnemyCount();
-                    EditorGUILayout.LabelField($"Wave {i + 1}: {totalEnemies} enemies");
+                    EditorGUILayout.LabelField($"Wave {i + 1}: {totalEnemies} enemies, {wave.EnemyGroups.Count} groups");
                 }
 
                 EditorGUILayout.EndVertical();
@@ -772,28 +849,61 @@ namespace TowerDefense.Editor
             if (!EditorUtility.DisplayDialog("Generate Random Waves", "This will replace all existing waves. Continue?", "Yes", "No"))
                 return;
 
+            if (availableEnemyIds == null || availableEnemyIds.Length == 0)
+            {
+                EditorUtility.DisplayDialog("No Enemy Data Found", "No enemy data found in Resources folder. Make sure you have EnemyData ScriptableObjects in your Resources folder.", "OK");
+                return;
+            }
+
             currentLevel.ClearWaves();
 
             int waveCount = Random.Range(3, 8);
-            string[] enemyTypes = { "BasicEnemy", "FastEnemy", "TankEnemy", "FlyingEnemy" };
 
             for (int i = 0; i < waveCount; i++)
             {
-                WaveData newWave = new WaveData();
-
-                int groupCount = Random.Range(1, 4);
-                for (int j = 0; j < groupCount; j++)
-                {
-                    EnemyGroupData group = new EnemyGroupData();
-                    // Note: You'll need to modify EnemyGroupData to have public setters or constructor parameters
-                    // This is a placeholder showing the intended functionality
-                    newWave.AddEnemyGroup(group);
-                }
-
+                WaveData newWave = CreateRandomWave(i + 1);
                 currentLevel.AddWave(newWave);
             }
 
-            EditorUtility.DisplayDialog("Waves Generated! 🌊", $"Generated {waveCount} random waves!", "Great!");
+            EditorUtility.SetDirty(currentLevel);
+            EditorUtility.DisplayDialog("Waves Generated! 🌊", $"Generated {waveCount} random waves with varying difficulty!", "Great!");
+        }
+
+        private WaveData CreateRandomWave(int waveNumber)
+        {
+            WaveData wave = new WaveData();
+
+            // Set random delay between groups (1-5 seconds)
+            float delayBetweenGroups = Random.Range(1f, 5f);
+            wave.SetDelayBetweenGroups(delayBetweenGroups);
+
+            // Generate 1-4 enemy groups per wave, scaling with wave number
+            int groupCount = Random.Range(1, Mathf.Min(4, waveNumber + 1));
+
+            for (int j = 0; j < groupCount; j++)
+            {
+                EnemyGroupData group = CreateRandomEnemyGroup(waveNumber);
+                wave.AddEnemyGroup(group);
+            }
+
+            return wave;
+        }
+
+        private EnemyGroupData CreateRandomEnemyGroup(int waveNumber = 1)
+        {
+            // Random enemy type from available enemy data
+            string randomEnemyId = availableEnemyIds[Random.Range(0, availableEnemyIds.Length)];
+
+            // Random count (scaling with wave number for difficulty progression)
+            int baseCount = Random.Range(3, 8);
+            int scaledCount = Mathf.RoundToInt(baseCount * (1f + (waveNumber - 1) * 0.3f));
+            int finalCount = Mathf.Clamp(scaledCount, 1, 20);
+
+            // Random spawn delay (0.3 - 2.0 seconds)
+            float randomSpawnDelay = Random.Range(0.3f, 2f);
+
+            // Create EnemyGroupData with the constructor
+            return new EnemyGroupData(randomEnemyId, finalCount, randomSpawnDelay);
         }
         #endregion
     }

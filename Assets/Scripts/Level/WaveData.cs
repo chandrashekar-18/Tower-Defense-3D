@@ -30,6 +30,12 @@ namespace TowerDefense.Level
             }
             return total;
         }
+
+        // Add method to set delay between groups
+        public void SetDelayBetweenGroups(float delay)
+        {
+            delayBetweenGroups = delay;
+        }
     }
 
     /// <summary>
@@ -45,6 +51,37 @@ namespace TowerDefense.Level
         public string EnemyId => enemyId;
         public int Count => count;
         public float SpawnDelay => spawnDelay;
+
+        // Add constructor for easier creation
+        public EnemyGroupData()
+        {
+            enemyId = "";
+            count = 5;
+            spawnDelay = 1f;
+        }
+
+        public EnemyGroupData(string enemyId, int count, float spawnDelay)
+        {
+            this.enemyId = enemyId;
+            this.count = count;
+            this.spawnDelay = spawnDelay;
+        }
+
+        // Add methods to set properties
+        public void SetEnemyId(string id)
+        {
+            enemyId = id;
+        }
+
+        public void SetCount(int newCount)
+        {
+            count = newCount;
+        }
+
+        public void SetSpawnDelay(float delay)
+        {
+            spawnDelay = delay;
+        }
     }
 
     /// <summary>
@@ -70,7 +107,11 @@ namespace TowerDefense.Level
         public WaveData ToWaveData()
         {
             WaveData waveData = new WaveData();
+            
+            // Set delay between groups
+            waveData.SetDelayBetweenGroups(delayBetweenGroups);
 
+            // Add enemy groups
             foreach (EnemyGroupDataSerializable groupSerializable in enemyGroups)
             {
                 waveData.AddEnemyGroup(groupSerializable.ToEnemyGroupData());
@@ -99,7 +140,8 @@ namespace TowerDefense.Level
 
         public EnemyGroupData ToEnemyGroupData()
         {
-            EnemyGroupData groupData = new EnemyGroupData();
+            // Create properly initialized EnemyGroupData
+            EnemyGroupData groupData = new EnemyGroupData(enemyId, count, spawnDelay);
             return groupData;
         }
     }

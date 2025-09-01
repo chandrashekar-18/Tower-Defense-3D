@@ -53,9 +53,7 @@ namespace TowerDefense.Level
                 return;
             }
 
-            // Load the level scene if needed
             SceneLoader.Instance.LoadScene(GameConstants.GameplayScene);
-
             StartCoroutine(LoadLevelRoutine(levelIndex));
         }
         #endregion
@@ -63,55 +61,20 @@ namespace TowerDefense.Level
         #region Private Methods
         private void LoadLevelData()
         {
-            // Load level data from resources or JSON
             levels.Clear();
 
-            // Try to load from Resources first
             LevelData[] resourceLevels = Resources.LoadAll<LevelData>("Levels");
             if (resourceLevels != null && resourceLevels.Length > 0)
             {
                 levels.AddRange(resourceLevels);
             }
-
-            // If we don't have at least 3 levels, load from JSON
-            if (levels.Count < 3)
-            {
-                LoadLevelsFromJSON();
-            }
-
-            // If we still don't have levels, create defaults
-            if (levels.Count < 3)
-            {
-                CreateDefaultLevels();
-            }
-        }
-
-        private void LoadLevelsFromJSON()
-        {
-            // Implementation for loading levels from JSON
-            // This would be implemented as part of the LevelEditor
-        }
-
-        private void CreateDefaultLevels()
-        {
-            // Create 3 default levels
-            for (int i = 0; i < 3; i++)
-            {
-                LevelData level = ScriptableObject.CreateInstance<LevelData>();
-                level.LevelNumber = i + 1;
-                level.InitializeDefaultValues();
-                levels.Add(level);
-            }
         }
 
         private IEnumerator LoadLevelRoutine(int levelIndex)
         {
-            // Wait for scene to load
             yield return new WaitForEndOfFrame();
 
             currentLevelData = levels[levelIndex - 1];
-            
-            // Notify subscribers
             OnLevelLoaded?.Invoke(currentLevelData);
         }
         #endregion

@@ -21,41 +21,41 @@ namespace TowerDefense.Level
 
         #region Properties
         public int LevelNumber { get => levelNumber; set => levelNumber = value; }
-        public string LevelName => levelName;
+        public string LevelName { get => levelName; set => levelName = value; }
         public int GridWidth => gridWidth;
         public int GridHeight => gridHeight;
         public List<WaveData> Waves => waves;
-        public int StartingCurrency => startingCurrency;
+        public int StartingCurrency { get => startingCurrency; set => startingCurrency = value; }
         #endregion
 
         #region Public Methods
-public void InitializeDefaultValues()
-{
-    levelName = $"Level {levelNumber}";
-    
-    // Don't reset grid dimensions if they're already set
-    if (gridData == null)
-    {
-        gridWidth = 15;
-        gridHeight = 10;
-    }
-    
-    startingCurrency = 300;
-
-    // Create new grid with current dimensions
-    CellTypeData[,] newGrid = new CellTypeData[gridWidth, gridHeight];
-
-    // Initialize all cells as empty
-    for (int x = 0; x < gridWidth; x++)
-    {
-        for (int z = 0; z < gridHeight; z++)
+        public void InitializeDefaultValues()
         {
-            newGrid[x, z] = new CellTypeData { CellType = Grid.CellType.Empty };
-        }
-    }
+            levelName = $"Level {levelNumber}";
+            
+            // Don't reset grid dimensions if they're already set
+            if (gridData == null)
+            {
+                gridWidth = 15;
+                gridHeight = 10;
+            }
+            
+            startingCurrency = 300;
 
-    gridData = newGrid;
-}
+            // Create new grid with current dimensions
+            CellTypeData[,] newGrid = new CellTypeData[gridWidth, gridHeight];
+
+            // Initialize all cells as empty
+            for (int x = 0; x < gridWidth; x++)
+            {
+                for (int z = 0; z < gridHeight; z++)
+                {
+                    newGrid[x, z] = new CellTypeData { CellType = Grid.CellType.Empty };
+                }
+            }
+
+            gridData = newGrid;
+        }
 
         // Add this new method for resizing the grid
         public void ResizeGrid(int newWidth, int newHeight)
@@ -82,6 +82,7 @@ public void InitializeDefaultValues()
             gridHeight = newHeight;
             gridData = newGrid;
         }
+        
         public Grid.CellType GetCellType(int x, int z)
         {
             if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight || gridData == null)
@@ -161,6 +162,7 @@ public void InitializeDefaultValues()
             gridHeight = levelData.GridHeight;
             startingCurrency = levelData.StartingCurrency;
 
+            // Serialize grid data
             gridDataFlattened = new int[gridWidth * gridHeight];
             for (int x = 0; x < gridWidth; x++)
             {
@@ -170,6 +172,7 @@ public void InitializeDefaultValues()
                 }
             }
 
+            // Serialize waves
             waves = new List<WaveDataSerializable>();
             foreach (WaveData wave in levelData.Waves)
             {
@@ -181,8 +184,18 @@ public void InitializeDefaultValues()
         {
             LevelData levelData = ScriptableObject.CreateInstance<LevelData>();
 
-            levelData.InitializeDefaultValues();
+            // Set basic properties using the public setters
+            levelData.LevelNumber = levelNumber;
+            levelData.LevelName = levelName;
+            levelData.StartingCurrency = startingCurrency;
 
+            // Set the name property for the ScriptableObject
+            levelData.name = levelName;
+
+            // Resize grid to match loaded dimensions
+            levelData.ResizeGrid(gridWidth, gridHeight);
+
+            // Restore grid data
             for (int x = 0; x < gridWidth; x++)
             {
                 for (int z = 0; z < gridHeight; z++)
@@ -192,6 +205,7 @@ public void InitializeDefaultValues()
                 }
             }
 
+            // Restore waves
             levelData.ClearWaves();
             foreach (WaveDataSerializable waveSerializable in waves)
             {
