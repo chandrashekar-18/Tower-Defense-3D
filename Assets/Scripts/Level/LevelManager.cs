@@ -55,7 +55,6 @@ namespace TowerDefense.Level
                 return;
             }
             currentLevelData = levels[levelIndex - 1];
-            currentLevelData.DebugPrintGrid();
             OnLevelLoaded?.Invoke(currentLevelData);
             SceneLoader.Instance.LoadScene(GameConstants.GameplayScene);
         }

@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 46778445}
   - component: {fileID: 46778444}
   m_Layer: 0
-  m_Name: 'TowerController '
+  m_Name: TOWER_CONTROLLER
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -196,10 +196,11 @@ MonoBehaviour:
   mainCamera: {fileID: 396594558}
   gridLayerMask:
     serializedVersion: 2
-    m_Bits: 0
-  towerFactory: {fileID: 0}
+    m_Bits: 256
+  towerFactory: {fileID: 1808876196}
   selectedTowerID: basic
   placementIndicator: {fileID: 0}
+  dragThreshold: 0.1
 --- !u!4 &46778445
 Transform:
   m_ObjectHideFlags: 0

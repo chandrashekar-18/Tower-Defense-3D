@@ -18,11 +18,11 @@ namespace TowerDefense.Core
 
         #region Variables
         [SerializeField] private EnemyFactory enemyFactory;
-        [SerializeField] private List<WaveData> waves = new List<WaveData>();
-        [SerializeField] private int currentWaveIndex = -1;
-        [SerializeField] private int remainingEnemiesInWave = 0;
-        [SerializeField] private bool isSpawning = false;
-        [SerializeField] private float timeBetweenWaves = 5f;
+        private List<WaveData> waves = new List<WaveData>();
+        private int currentWaveIndex = -1;
+        private int remainingEnemiesInWave = 0;
+        private bool isSpawning = false;
+        private float timeBetweenWaves = 5f;
         #endregion
 
         #region Properties

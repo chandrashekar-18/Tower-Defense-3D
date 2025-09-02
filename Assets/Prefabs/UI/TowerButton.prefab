@@ -424,11 +424,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdd41bd7a3d9ea340906aecf2b31a85d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerIcon: {fileID: 6761179772874560107}
+  towerIcon: {fileID: 0}
   towerNameText: {fileID: 1014415643398832664}
   towerCostText: {fileID: 662950242170119465}
   button: {fileID: 3614272153399520328}
-  selectionIndicator: {fileID: 7217204803855053759}
+  selectionIndicator: {fileID: 7569385974411940759}
 --- !u!1 &6345781424688917552
 GameObject:
   m_ObjectHideFlags: 0

@@ -37,7 +37,7 @@ namespace TowerDefense.Core
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        
+
         private void Start()
         {
             Initialize();
@@ -48,6 +48,7 @@ namespace TowerDefense.Core
         public void Initialize()
         {
             currency = LevelManager.Instance.CurrentLevelData.StartingCurrency;
+            Debug.Log($"Starting Currency: {currency}");
             OnCurrencyChanged?.Invoke(currency);
         }
 

@@ -14,9 +14,12 @@ namespace TowerDefense.Towers
         [SerializeField] private UnityEngine.Camera mainCamera;
         [SerializeField] private LayerMask gridLayerMask;
         [SerializeField] private TowerFactory towerFactory;
-        [SerializeField] private string selectedTowerID = "basic"; // Use string ID instead
-        [SerializeField] private GameObject placementIndicator;
-
+        [SerializeField] private string selectedTowerID;
+        [Header("Touch Settings")]
+        [SerializeField] private float dragThreshold = 0.1f;
+        private Vector2 touchStartPosition;
+        private bool isDragging = false;
+        private bool canPlace = false;
         private bool isPlacingTower = false;
         private GridCell highlightedCell = null;
         private TowerData selectedTowerData;
@@ -45,26 +48,6 @@ namespace TowerDefense.Towers
             if (mainCamera == null)
             {
                 mainCamera = UnityEngine.Camera.main;
-            }
-
-            if (towerFactory == null)
-            {
-                towerFactory = FindObjectOfType<TowerFactory>();
-            }
-
-            if (placementIndicator != null)
-            {
-                placementIndicator.SetActive(false);
-            }
-
-            // Initialize with first available tower
-            if (towerFactory != null)
-            {
-                var availableTowers = towerFactory.GetAvailableTowers();
-                if (availableTowers.Count > 0)
-                {
-                    SelectTower(availableTowers[0].TowerID);
-                }
             }
         }
 
@@ -96,33 +79,127 @@ namespace TowerDefense.Towers
             OnTowerSelected?.Invoke(towerID, selectedTowerData);
         }
 
+        private void HandleTowerPlacement()
+        {
+#if UNITY_EDITOR || UNITY_STANDALONE
+            HandleDesktopPlacement();
+#else
+        HandleMobilePlacement();
+#endif
+        }
+
+        private void HandleDesktopPlacement()
+        {
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, 100f, gridLayerMask))
+            {
+                HandleCellHover(hit);
+
+                // Place tower on mouse up after dragging
+                if (Input.GetMouseButtonUp(0) && isDragging && canPlace)
+                {
+                    PlaceTower(highlightedCell);
+                    isDragging = false;
+                }
+            }
+            else
+            {
+                ClearHighlight();
+            }
+
+            // Start dragging on mouse down
+            if (Input.GetMouseButtonDown(0))
+            {
+                touchStartPosition = Input.mousePosition;
+                isDragging = true;
+            }
+        }
+
+        private void HandleMobilePlacement()
+        {
+            if (Input.touchCount == 0)
+            {
+                ClearHighlight();
+                return;
+            }
+
+            Touch touch = Input.GetTouch(0);
+            Ray ray = mainCamera.ScreenPointToRay(touch.position);
+            RaycastHit hit;
+
+            switch (touch.phase)
+            {
+                case TouchPhase.Began:
+                    touchStartPosition = touch.position;
+                    isDragging = true;
+                    break;
+
+                case TouchPhase.Moved:
+                    if (isDragging && Physics.Raycast(ray, out hit, 100f, gridLayerMask))
+                    {
+                        HandleCellHover(hit);
+                    }
+                    break;
+
+                case TouchPhase.Ended:
+                    if (isDragging && canPlace && highlightedCell != null)
+                    {
+                        PlaceTower(highlightedCell);
+                    }
+                    isDragging = false;
+                    break;
+            }
+        }
+
+        private void HandleCellHover(RaycastHit hit)
+        {
+            GridCell cell = hit.collider.GetComponent<GridCell>();
+            if (cell != null)
+            {
+                // Clear previous highlight
+                if (highlightedCell != null && highlightedCell != cell)
+                {
+                    highlightedCell.Highlight(false);
+                }
+
+                // Highlight current cell
+                highlightedCell = cell;
+                canPlace = GridManager.Instance.CanPlaceTower(cell.X, cell.Z);
+
+                cell.Highlight(true);
+            }
+        }
+
+        private void ClearHighlight()
+        {
+            if (highlightedCell != null)
+            {
+                highlightedCell.Highlight(false);
+                highlightedCell = null;
+            }
+
+            canPlace = false;
+        }
+
         public void StartPlacement()
         {
             if (GameManager.Instance.CurrentGameState != GameState.Playing)
                 return;
 
-            // Check if player can afford the tower
             if (selectedTowerData == null || !CurrencyManager.Instance.CanAfford(selectedTowerData.Cost))
                 return;
 
             isPlacingTower = true;
-
-            if (placementIndicator != null)
-            {
-                placementIndicator.SetActive(true);
-            }
-
+            isDragging = false;
+            canPlace = false;
             OnPlacementModeChanged?.Invoke(true);
         }
 
         public void CancelPlacement()
         {
             isPlacingTower = false;
-
-            if (placementIndicator != null)
-            {
-                placementIndicator.SetActive(false);
-            }
 
             // Clear highlighted cell
             if (highlightedCell != null)
@@ -136,98 +213,30 @@ namespace TowerDefense.Towers
         #endregion
 
         #region Private Methods
-        private void HandleTowerPlacement()
-        {
-            // Raycast to find grid cell
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, 100f, gridLayerMask))
-            {
-                // Get grid cell
-                GridCell cell = hit.collider.GetComponent<GridCell>();
-
-                if (cell != null)
-                {
-                    // Clear previous highlight
-                    if (highlightedCell != null && highlightedCell != cell)
-                    {
-                        highlightedCell.Highlight(false);
-                    }
-
-                    // Highlight current cell
-                    highlightedCell = cell;
-
-                    // Move placement indicator
-                    if (placementIndicator != null)
-                    {
-                        placementIndicator.transform.position = cell.WorldPosition + Vector3.up * 0.1f;
-
-                        // Change color based on placement validity
-                        Renderer renderer = placementIndicator.GetComponent<Renderer>();
-                        if (renderer != null)
-                        {
-                            bool canPlace = GridManager.Instance.CanPlaceTower(cell.X, cell.Z);
-                            renderer.material.color = canPlace ? Color.green : Color.red;
-                        }
-
-                        cell.Highlight(true);
-                    }
-
-                    // Place tower on click
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        PlaceTower(cell);
-                    }
-                }
-            }
-            else
-            {
-                // Clear highlighted cell
-                if (highlightedCell != null)
-                {
-                    highlightedCell.Highlight(false);
-                    highlightedCell = null;
-                }
-
-                // Hide placement indicator
-                if (placementIndicator != null)
-                {
-                    placementIndicator.transform.position = new Vector3(0, -100, 0); // Move out of view
-                }
-            }
-        }
-
         private void PlaceTower(GridCell cell)
         {
             if (!GridManager.Instance.CanPlaceTower(cell.X, cell.Z))
                 return;
 
-            // Check if player can afford the tower
             if (selectedTowerData == null || !CurrencyManager.Instance.SpendCurrency(selectedTowerData.Cost))
                 return;
 
-            // Create tower
             GameObject towerObject = towerFactory.CreateTower(selectedTowerData, cell.WorldPosition);
 
             if (towerObject != null)
             {
-                // Update grid cell
                 GridManager.Instance.PlaceTower(cell.X, cell.Z, towerObject);
 
-                // Notify listeners
                 Tower tower = towerObject.GetComponent<Tower>();
                 if (tower != null)
                 {
                     OnTowerPlaced?.Invoke(tower, cell);
                 }
 
-                // Exit placement mode
                 CancelPlacement();
             }
             else
             {
-                // Refund cost if tower creation failed
                 CurrencyManager.Instance.AddCurrency(selectedTowerData.Cost);
             }
         }

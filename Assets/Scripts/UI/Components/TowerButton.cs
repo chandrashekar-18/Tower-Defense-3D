@@ -27,7 +27,7 @@ namespace TowerDefense.UI.Components
         #endregion
 
         #region Unity Lifecycle
-        private void Start()
+        private void OnEnable()
         {
             CurrencyManager.OnCurrencyChanged += UpdateButtonInteractability;
             TowerController.OnTowerSelected += UpdateTowerInfo;
@@ -36,7 +36,7 @@ namespace TowerDefense.UI.Components
             SetSelected(false);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             CurrencyManager.OnCurrencyChanged -= UpdateButtonInteractability;
             TowerController.OnTowerSelected -= UpdateTowerInfo;
@@ -49,15 +49,8 @@ namespace TowerDefense.UI.Components
         {
             this.towerData = towerData;
 
-            if (towerNameText != null)
-            {
-                towerNameText.text = towerData.TowerName;
-            }
-
-            if (towerCostText != null)
-            {
-                towerCostText.text = $"${towerData.Cost}";
-            }
+            towerNameText.text = towerData.TowerName;
+            towerCostText.text = $"${towerData.Cost}";
 
             if (towerIcon != null && towerData.Icon != null)
             {
@@ -70,10 +63,7 @@ namespace TowerDefense.UI.Components
 
         public void SetSelected(bool isSelected)
         {
-            if (selectionIndicator != null)
-            {
-                selectionIndicator.SetActive(isSelected);
-            }
+            selectionIndicator.SetActive(isSelected);
         }
         #endregion
 
@@ -85,19 +75,14 @@ namespace TowerDefense.UI.Components
 
         private void OnButtonClicked()
         {
-            // Select this tower
             GameplayUIHandler.Instance.SelectTower(TowerData.TowerID);
-
-            // Start placement mode
             GameplayUIHandler.Instance.StartTowerPlacement();
         }
 
         private void UpdateButtonInteractability(int currentCurrency)
         {
-            if (button != null && towerData != null)
-            {
-                button.interactable = currentCurrency >= towerData.Cost;
-            }
+            Debug.Log($"Current Currency: {currentCurrency}, Tower Cost: {towerData.Cost}");
+            button.interactable = currentCurrency >= towerData.Cost;
         }
         #endregion
     }
