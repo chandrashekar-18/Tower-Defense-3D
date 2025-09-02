@@ -26,6 +26,7 @@ namespace TowerDefense.UI.Menus
             base.Open();
             menuBtn.onClick.AddListener(OnMenuBtnClicked);
             restartBtn.onClick.AddListener(OnRestartBtnClicked);
+            Initialize(GameManager.Instance.IsVictory);
         }
 
         public override void Close()

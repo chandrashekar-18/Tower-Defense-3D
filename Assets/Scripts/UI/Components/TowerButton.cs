@@ -81,7 +81,6 @@ namespace TowerDefense.UI.Components
 
         private void UpdateButtonInteractability(int currentCurrency)
         {
-            Debug.Log($"Current Currency: {currentCurrency}, Tower Cost: {towerData.Cost}");
             button.interactable = currentCurrency >= towerData.Cost;
         }
         #endregion

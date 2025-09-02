@@ -86,9 +86,14 @@ namespace TowerDefense.Core
 
         public void StartNextWave()
         {
-            if (isSpawning) return;
+            if (isSpawning)
+            {
+                Debug.Log("Cannot start next wave while spawning is in progress");
+                return;
+            }
 
             currentWaveIndex++;
+            Debug.Log($"Starting wave {currentWaveIndex + 1} of {waves.Count}");
 
             if (currentWaveIndex < waves.Count)
             {
@@ -96,10 +101,8 @@ namespace TowerDefense.Core
             }
             else
             {
-                // All waves completed
+                Debug.Log("All waves completed");
                 OnAllWavesCompleted?.Invoke();
-
-                // Level complete
                 GameManager.Instance.GameOver(true);
             }
         }
@@ -108,22 +111,31 @@ namespace TowerDefense.Core
         {
             remainingEnemiesInWave--;
             OnEnemyDefeated?.Invoke(enemy);
+            CheckWaveCompletion();
+        }
 
+        public void EnemyReachedEnd(Enemy enemy)
+        {
+            remainingEnemiesInWave--;
+            CheckWaveCompletion();
+        }
+
+        private void CheckWaveCompletion()
+        {
             // Check if wave is complete
             if (remainingEnemiesInWave <= 0 && !isSpawning)
             {
                 OnWaveCompleted?.Invoke(currentWaveIndex);
 
-                if (!IsLastWave)
+                if (!IsLastWave) // Check if game is still active
                 {
                     // Start next wave after delay
                     StartCoroutine(StartWaveAfterDelay(timeBetweenWaves));
                 }
-                else
+                else if (IsLastWave)
                 {
                     // All waves completed
                     OnAllWavesCompleted?.Invoke();
-
                     // Level complete
                     GameManager.Instance.GameOver(true);
                 }
@@ -158,6 +170,7 @@ namespace TowerDefense.Core
         private IEnumerator SpawnWave(WaveData waveData)
         {
             isSpawning = true;
+            Debug.Log($"Wave {currentWaveIndex + 1}: Spawning {waveData.GetTotalEnemyCount()} enemies");
             OnWaveStarted?.Invoke(currentWaveIndex, waveData);
 
             // Count total enemies in wave
@@ -204,6 +217,8 @@ namespace TowerDefense.Core
 
         private void SpawnEnemy(string enemyId)
         {
+            Debug.Log($"Attempting to spawn enemy: {enemyId}");
+
             // Choose random spawn point
             Transform[] spawnPoints = GridManager.Instance.GetSpawnPoints();
             if (spawnPoints.Length == 0)
@@ -219,7 +234,7 @@ namespace TowerDefense.Core
 
             // Create enemy using factory
             Enemy enemy = enemyFactory.CreateEnemy(enemyId, spawnPoint.position, path);
-            
+
             if (enemy == null)
             {
                 Debug.LogError($"Failed to create enemy '{enemyId}'!");
@@ -229,6 +244,7 @@ namespace TowerDefense.Core
 
             // Register for defeat event
             enemy.OnDefeated += EnemyDefeated;
+            enemy.OnReachedEnd += EnemyReachedEnd;
 
             // Notify subscribers
             OnEnemySpawned?.Invoke(enemy);

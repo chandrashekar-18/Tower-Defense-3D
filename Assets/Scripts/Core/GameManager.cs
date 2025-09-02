@@ -18,16 +18,15 @@ namespace TowerDefense.Core
         private int currentLevel = 0;
         private int playerLives = 20;
         private bool isPaused = false;
+        private bool isVictory;
         #endregion
 
         #region Properties
         public GameState CurrentGameState => currentGameState;
-
         public int CurrentLevel => currentLevel;
-
         public int PlayerLives => playerLives;
-
         public bool IsPaused => isPaused;
+        public bool IsVictory => isVictory;
         #endregion
 
         #region Events
@@ -99,6 +98,7 @@ namespace TowerDefense.Core
         public void GameOver(bool victory = false)
         {
             Debug.Log(victory ? "Victory!" : "Defeat!");
+            isVictory = victory;
             ChangeGameState(GameState.GameOver);
         }
 

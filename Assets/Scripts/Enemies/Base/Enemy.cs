@@ -65,6 +65,11 @@ namespace TowerDefense.Enemies
             // Call custom behavior for derived classes
             ExecuteBehavior();
         }
+        protected virtual void OnDestroy()
+        {
+            OnDefeated -= WaveManager.Instance.EnemyDefeated;
+            OnReachedEnd -= WaveManager.Instance.EnemyReachedEnd;
+        }
         #endregion
 
         #region Public Methods
